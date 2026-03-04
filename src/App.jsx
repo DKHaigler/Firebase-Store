@@ -1,25 +1,10 @@
 import './App.css';
-import { initializeApp } from "firebase/app";
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { useState, useEffect } from 'react';
-
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGEBUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+import { db, auth, app } from './lib/firebase';
+import Todo  from './Components/Todo';
 
 function App() {
-  const [name, setName] = useState();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
@@ -74,12 +59,12 @@ function App() {
     }
    return (
     <>
-    <p>Firestore Authentication</p>
 
     <div>
       {
         !user && (
           <>
+          <p>Firestore Authentication</p>
           <input type='text' placeholder='Email' value={email} onChange={(event) => setEmail(event.target.value)}/>
           <input type='password' placeholder='Password' value={password} onChange={(event) => setPassword(event.target.value)}/>
             <button onClick={signUp}>Sign Up</button>
@@ -92,8 +77,11 @@ function App() {
     {
       user && (
         <div>
-          <p>Logged in as: {user.email}</p>
-          <button onClick={logOut}>Sign out</button>
+          <Todo />
+          <div className='user-logged__container'>
+            <p>Logged in as: {user.email}</p>
+            <button onClick={logOut}>Sign out</button>
+          </div>
         </div>
       
       )

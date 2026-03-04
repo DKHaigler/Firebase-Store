@@ -15,3 +15,13 @@ p {
   font-size: 30px;
   text-align:center;
 }
+
+.user-logged__container {
+  display: flex;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 50%;
+  justify-content: right;
+}
+
