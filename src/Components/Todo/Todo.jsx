@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { db } from '../../lib/firebase';
+import {query, where} from 'firebase/firestore';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import './Todo.css';
 
-const Todo = () => {
+const Todo = ({user}) => {
     const [todos, setTodos] = useState([]);
     const [newTodo, setNewTodo] = useState('');
     const [editId, setEditId] = useState(null);
@@ -11,19 +12,27 @@ const Todo = () => {
 
     // Fetch Todos from Firestore
     useEffect(() => {
+        if (!user) return;
+        
         const fetchTodos = async () => {
-            const querySnapshot = await getDocs(collection(db, "todos"));
+            const q = query(
+                collection(db, "todos"),
+                where("uid", "==", user.uid)
+            )
+            const querySnapshot = await getDocs(q);
             setTodos(querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id})))
         };
         fetchTodos();
-    }, []); // Only runs once
+    }, [user]); // Only runs once
 
     // Add a new Todo
     const addTodo = async () => {
+        if(!user) return;
         if (newTodo.trim() === '') return;
         const docRef = await addDoc(collection(db, "todos"), {
             text: newTodo,
-            completed: false
+            completed: false,
+            uid: user.uid
         })
         setTodos([...todos, { text: newTodo, completed: false, id: docRef.id }]);
         setNewTodo('');

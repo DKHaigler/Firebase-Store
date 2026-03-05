@@ -77,7 +77,7 @@ function App() {
     {
       user && (
         <div>
-          <Todo />
+          <Todo user={user} />
           <div className='user-logged__container'>
             <p>Logged in as: {user.email}</p>
             <button onClick={logOut}>Sign out</button>
