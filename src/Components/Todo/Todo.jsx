@@ -3,6 +3,8 @@ import { db } from '../../lib/firebase';
 import {query, where} from 'firebase/firestore';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import './Todo.css';
+import { TodoInput } from '../TodoInput/TodoInput';
+import { TodoList } from '../TodoList/TodoList';
 
 const Todo = ({user}) => {
     const [todos, setTodos] = useState([]);
@@ -34,12 +36,13 @@ const Todo = ({user}) => {
             completed: false,
             uid: user.uid
         })
-        setTodos([...todos, { text: newTodo, completed: false, id: docRef.id }]);
+        setTodos(prevtodos => [...prevtodos, { text: newTodo, completed: false, id: docRef.id }]);
         setNewTodo('');
     }
 
     // Delete a Todo
     const deleteTodo = async (id) => {
+        console.log("Deleting:", id);
         await deleteDoc(doc(db, "todos", id));
         setTodos(todos.filter(todo => todo.id !== id))
     }
@@ -77,41 +80,25 @@ const Todo = ({user}) => {
     return (
         <>
         <header className='header__title'>
-            <h1>Todo</h1>
+            <h1 className='title'>Todo</h1>
         </header>
-        <div>
-            <input type="text" value={newTodo} onChange={(event) => setNewTodo(event.target.value)}/>
-            <button onClick={addTodo}>Add Todo</button>
+        <div className='todo__container'>
+            <TodoInput
+                newTodo={newTodo}
+                setNewTodo={setNewTodo}
+                addTodo={addTodo}
+            />
+            <TodoList 
+                todos={todos}
+                editId={editId}
+                editText={editText}
+                setEditText={setEditText}
+                startEdit={startEdit}
+                saveEdit={saveEdit}
+                deleteTodo={deleteTodo}
+                taskComplete={taskComplete}
+            />
         </div>
-        <ul>
-            {todos.map(todo => (
-                <li key={todo.id} className='todo__container'>
-                    {
-                        editId === todo.id ? (
-                            <>
-                            <input 
-                                type="text"
-                                value={editText}
-                                onChange={(event) => setEditText(event.target.value)}
-                            />
-                                <button className='save' onClick={() => saveEdit(editId, editText)}>Save</button>
-                            </>
-                        ) : (
-                            <div className='todo-inner__container'>
-                            <input type="checkbox" checked={todo.completed} onChange={() => taskComplete(todo.id)} />
-                                <div className={todo.completed ? "completed": ""}>
-                                {todo.text}
-                                </div>
-                                <div className='button__container'>
-                                <button onClick={() => startEdit(todo.id, todo.text)}>Edit</button>
-                                <button className='delete' onClick={() => deleteTodo(todo.id)}>Delete</button>
-                                </div>
-                            </div>
-                        )
-                    }
-                </li>
-            ))}
-        </ul>
         </>
     )
 }

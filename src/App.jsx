@@ -3,6 +3,7 @@ import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWith
 import { useState, useEffect } from 'react';
 import { db, auth, app } from './lib/firebase';
 import Todo  from './Components/Todo';
+import { CustomButton } from './Components/Button/Button';
 
 function App() {
   const [email, setEmail] = useState('');
@@ -67,8 +68,9 @@ function App() {
           <p>Firestore Authentication</p>
           <input type='text' placeholder='Email' value={email} onChange={(event) => setEmail(event.target.value)}/>
           <input type='password' placeholder='Password' value={password} onChange={(event) => setPassword(event.target.value)}/>
-            <button onClick={signUp}>Sign Up</button>
-            <button onClick={signIn}>Sign in</button>
+            <CustomButton label="Sign Up" hoverColor="green" onClick={signUp}/>
+            <CustomButton label="Sign in" hoverColor="green" onClick={signIn}/>
+            
           </>
         )
       }
@@ -80,7 +82,7 @@ function App() {
           <Todo user={user} />
           <div className='user-logged__container'>
             <p>Logged in as: {user.email}</p>
-            <button onClick={logOut}>Sign out</button>
+            <CustomButton label="Sign Out" hoverColor="red" onClick={logOut}/>
           </div>
         </div>
       

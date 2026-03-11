@@ -27,18 +27,56 @@ li {
     top: 0px;
     justify-content: left;
 
+
 }
+
+.title {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 10px;
+}
+
 .todo__container {
     display: flex;
+    flex-direction: column;
+    margin-top: 200px;
 }
 
 .todo-inner__container {
     display: flex;
-    justify-content: space-between;   
+    flex-direction: row;
+    justify-content: space-between;
+    border: solid 2px red;
+    border-radius: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.todo-text {
+    background-color: red;
+    width: 75%;
+    border-radius: 10px;
+
 }
 
 .completed {
     background-color: green;
+    width: 75%;
+    border-radius: 10px;
+
     
 }
 
+.header__title {
+    display: flex;
+    width: 100%;
+    height: auto    ;
+    border-bottom: 2px red solid;
+    background-color: blue;
+}
+
+.button__container {
+    display: flex;
+    justify-content: space-between;
+    width: 15%;
+}
