@@ -14,5 +14,9 @@
 }
 .custom-button:focus,
 .custom-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 4px auto var(--hover-color);
+}
+
+.custom-button.active {
+  outline: 4px auto var(--hover-color);
 }

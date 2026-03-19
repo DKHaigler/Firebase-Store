@@ -1,6 +1,19 @@
 import { CustomButton } from "../../Button/Button"
+import { TodoItemType } from "../../../types/Todo"
 
-export const TodoItem = ({ todo, editId, editText, setEditText, saveEdit, taskComplete, startEdit, deleteTodo }) => {
+type TodoItemProps = {
+  todo: TodoItemType;
+  editId: string | null;
+  editText: string;
+  setEditText: React.Dispatch<React.SetStateAction<string>>;
+  saveEdit: (id: string) => void;
+  taskComplete: (id: string) => void;
+  startEdit: (id: string, text: string) => void;
+  deleteTodo: (id: string) => void;
+  setDeleteId: (id:string) => void;
+};
+
+export const TodoItem = ({ todo, editId, editText, setEditText, saveEdit, taskComplete, startEdit, setDeleteId }: TodoItemProps) => {
     return(
         <li key={todo.id} className='todo-outer__container'>
             {
@@ -11,7 +24,7 @@ export const TodoItem = ({ todo, editId, editText, setEditText, saveEdit, taskCo
                         value={editText}
                         onChange={(event) => setEditText(event.target.value)}
                         />
-                         <CustomButton label="Save" hoverColor="green" onClick={() => saveEdit(editId)}/>
+                         <CustomButton label="Save" hoverColor="green" onClick={() => editId && saveEdit(editId)}/>
                     </>
                 ) : (
                     <div className='todo-inner__container'>
@@ -21,11 +34,13 @@ export const TodoItem = ({ todo, editId, editText, setEditText, saveEdit, taskCo
                         </div>
                         <div className='button__container'>
                         <CustomButton label="Edit" hoverColor="blue" onClick={() => startEdit(todo.id, todo.text)}/>
-                        <CustomButton label="Delete" hoverColor="red" onClick={() => deleteTodo(todo.id)}/>
+                        <CustomButton label="Delete" hoverColor="red" onClick={() => setDeleteId(todo.id)}/>
                         </div>
                     </div>
                 )
             }
         </li>
+
     )
 }
+

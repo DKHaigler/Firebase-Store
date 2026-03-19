@@ -46,14 +46,13 @@ li {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    border: solid 2px red;
+    border: solid 2px #999;
     border-radius: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
 }
 
 .todo-text {
-    background-color: red;
     width: 75%;
     border-radius: 10px;
 
@@ -71,8 +70,8 @@ li {
     display: flex;
     width: 100%;
     height: auto    ;
-    border-bottom: 2px red solid;
-    background-color: blue;
+    background-color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .button__container {

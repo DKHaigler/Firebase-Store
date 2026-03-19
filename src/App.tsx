@@ -4,11 +4,13 @@ import { useState, useEffect } from 'react';
 import { db, auth, app } from './lib/firebase';
 import Todo  from './Components/Todo';
 import { CustomButton } from './Components/Button/Button';
+import { SignUpIn } from './Components/SignUpIn/SignUpIn';
+import { User } from "firebase/auth";
 
 function App() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [user, setUser] = useState<User | null>(null);
   
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -66,10 +68,14 @@ function App() {
         !user && (
           <>
           <p>Firestore Authentication</p>
-          <input type='text' placeholder='Email' value={email} onChange={(event) => setEmail(event.target.value)}/>
-          <input type='password' placeholder='Password' value={password} onChange={(event) => setPassword(event.target.value)}/>
-            <CustomButton label="Sign Up" hoverColor="green" onClick={signUp}/>
-            <CustomButton label="Sign in" hoverColor="green" onClick={signIn}/>
+          <SignUpIn 
+            signIn={signIn}
+            signUp={signUp}
+            email={email}
+            password={password}
+            setEmail={setEmail}
+            setPassword={setPassword}
+          />
             
           </>
         )

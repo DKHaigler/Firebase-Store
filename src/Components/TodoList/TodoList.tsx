@@ -1,18 +1,32 @@
 import { TodoItem } from "./TodoItem/TodoItem";
+import { TodoItemType } from "../../types/Todo";
 
-export const TodoList = ({
-    todos,
+type TodoListProps = {
+  filteredTodos: TodoItemType[];
+  editId: string | null;
+  editText: string;
+  setEditText: React.Dispatch<React.SetStateAction<string>>;
+  startEdit: (id: string, text: string) => void;
+  saveEdit: (id: string) => void;
+  deleteTodo: (id: string) => void;
+  taskComplete: (id: string) => void;
+  setDeleteId: (id: string) => void;
+};
+
+export const TodoList:React.FC<TodoListProps> = ({
+    filteredTodos,
     editId,
     editText,
     setEditText,
     startEdit,
     saveEdit,
     deleteTodo,
-    taskComplete
+    taskComplete,
+    setDeleteId
 }) => {
     return (
         <ul>
-            {todos.map((todo) =>(
+            {filteredTodos.map((todo) =>(
                 <TodoItem
                     key={todo.id}
                     todo={todo}
@@ -23,6 +37,7 @@ export const TodoList = ({
                     saveEdit={saveEdit}
                     deleteTodo={deleteTodo}
                     taskComplete={taskComplete}
+                    setDeleteId={setDeleteId}
                 />
             ))}
         </ul>
