@@ -1,8 +1,8 @@
 import { TodoItem } from "./TodoItem/TodoItem";
-import { TodoItemType } from "../../types/Todo";
+import { Todo } from "../../types/Todo";
 
 type TodoListProps = {
-  filteredTodos: TodoItemType[];
+  filteredTodos: Todo[];
   editId: string | null;
   editText: string;
   setEditText: React.Dispatch<React.SetStateAction<string>>;

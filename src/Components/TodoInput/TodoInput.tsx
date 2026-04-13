@@ -8,7 +8,7 @@ type TodoInputProps = {
 
 export const TodoInput = ({ newTodo, setNewTodo, addTodo }: TodoInputProps) => {
     return (
-        <div>
+        <div className="add-todo">
             <input 
             type="text" 
             value={newTodo} 

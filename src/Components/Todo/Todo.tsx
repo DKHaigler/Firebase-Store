@@ -1,61 +1,30 @@
-import { useEffect, useState } from 'react';
-import { db } from '../../lib/firebase';
-import {query, where} from 'firebase/firestore';
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { useState } from 'react';
+import { addTodo as addTodoService, deleteTodo as deleteTodoService, updateTodoText, toggleTodoComplete, clearCompletedTodos } from '../../services/todoServices';
 import './Todo.css';
 import { TodoInput } from '../TodoInput/TodoInput';
 import { TodoList } from '../TodoList/TodoList';
 import { CustomButton } from '../Button/Button';
-import { writeBatch } from 'firebase/firestore';
+import { useTodos } from '../../hooks/useTodos';
+import { useFolders } from '../../hooks/useFolders';
 
 
 type TodoProps = {
     user:any;
 };
 
-type TodoItem = {
-    id: string;
-    text: string;
-    completed: boolean;
-    uid?: string;
-}
 const Todo: React.FC<TodoProps> = ({user}) => {
-    const [todos, setTodos] = useState<TodoItem[]>([]);
+    const {todos, loading} = useTodos(user);
+    const {folders, addFolder} = useFolders(user);
     const [newTodo, setNewTodo] = useState("");
     const [editId, setEditId] = useState<string | null>(null);
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [editText, setEditText] = useState("");
-    const [loading, setLoading] = useState<boolean>(true);
     const [error,setError] = useState<string | null>(null);
-    const [filter, setFilter] = useState<"all" | "active" | "completed">("all")
-
+    const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+    const [newFolder, setNewFolder] = useState("");
+    const [selectedFolder, setSelectedFolder] = useState<string | null>(null)
 
     // Fetch Todos from Firestore
-    useEffect(() => {
-
-        if (!user) {
-            setLoading(false);
-            return;
-        }
-        const fetchTodos = async () => {
-                try {
-                const q = query(
-                    collection(db, "todos"),
-                    where("uid", "==", user.uid)
-                );
-                const querySnapshot = await getDocs(q);
-                setTodos(querySnapshot.docs.map(doc => ({ 
-                    ...(doc.data() as Omit<TodoItem, "id">),
-                     id: doc.id})))
-            } catch (err) {
-                console.error(err);
-                setError("Failed to load todos");
-            } finally {
-                setLoading(false);
-            }
-        };
-            fetchTodos();
-    }, [user]); // Only runs once
 
     // Add a new Todo
     const addTodo = async () => {
@@ -63,12 +32,8 @@ const Todo: React.FC<TodoProps> = ({user}) => {
 
             if(!user) return;
             if (newTodo.trim() === '') return;
-            const docRef = await addDoc(collection(db, "todos"), {
-                text: newTodo,
-                completed: false,
-                uid: user.uid
-            })
-            setTodos(prevtodos => [...prevtodos, { text: newTodo, completed: false, id: docRef.id }]);
+
+            await addTodoService(user.uid, newTodo, selectedFolder);
             setNewTodo('');
         } catch (err) {
             console.error(err)
@@ -81,11 +46,8 @@ const Todo: React.FC<TodoProps> = ({user}) => {
         try{
 
             console.log("Deleting:", id);
-            await deleteDoc(doc(db, "todos", id));
+            await deleteTodoService(id)
             setError(null);
-            setTodos(prevTodos => 
-                prevTodos.filter(todo => todo.id !== id)
-            )
             setDeleteId(null)
         } catch (err) {
             console.error(err)
@@ -103,11 +65,7 @@ const Todo: React.FC<TodoProps> = ({user}) => {
     // Save the edited todo
     const saveEdit = async (id: string) => {
         try {
-            const docRef = doc(db, "todos", id);
-            await updateDoc(docRef, {
-                text: editText
-            });
-            setTodos(todos.map(todo => todo.id === id ? { ...todo, text: editText } : todo))
+            await updateTodoText(id, editText)
             setEditId(null); // Exiting the edit mode
             setEditText(''); // Clearing the edit text
         } catch (err) {
@@ -120,14 +78,9 @@ const Todo: React.FC<TodoProps> = ({user}) => {
     const taskComplete = async (id: string) => {
         try {
 
-            const todoUpdate = todos.find(todo => todo.id === id);
+            const todoUpdate = todos.find(t => t.id === id);
             if (!todoUpdate) return;
-            const flipped = !todoUpdate.completed;
-            setTodos(todos.map(todo =>
-                todo.id === id ?{...todo, completed: flipped } : todo
-            ));
-            const docRef = doc(db, "todos", id);
-            await updateDoc(docRef, { completed: flipped });
+            await toggleTodoComplete(id, !todoUpdate.completed)
         } catch (err) {
             console.error(err)
             setError("Failed to mark complete")
@@ -137,30 +90,46 @@ const Todo: React.FC<TodoProps> = ({user}) => {
 
     // Filter todos
     const filteredTodos = todos.filter(todo => {
+        if (selectedFolder === null) {
+        return !todo.folderId;
+        } 
+        if (todo.folderId !== selectedFolder) return false;
+        
+
         if (filter === "active") return !todo.completed;
         if (filter === "completed") return todo.completed;
         return true;
     })
 
     //Todo Counter
-    const activeCount = todos.filter(todo => !todo.completed).length;
+    const activeCount = filteredTodos.filter(todo => !todo.completed).length;
 
     //Delete Completed
     const clearCompleted = async () => {
         try {
-            const completedTodo = todos.filter(todo => todo.completed);
-            for (const todo of completedTodo) {
-                await deleteDoc(doc(db, "todos", todo.id))
+                await clearCompletedTodos(filteredTodos);
             }
-            
-            setTodos(prevTodos => prevTodos.filter(todo => !todo.completed));
-        }   catch (err) {
+          catch (err) {
             console.error(err);
             setError("Failed to clear completed todos")
         }
     }
 
-    const hasCompleted = todos.some(todo => todo.completed);
+    const hasCompleted = filteredTodos.some(todo => todo.completed);
+
+    // Add Folder
+    const handleAddFolder = async () => {
+  if (!user) return;
+  if (!newFolder.trim()) return;
+
+  try {
+    await addFolder(user.uid, newFolder);
+    setNewFolder("");
+  } catch (err) {
+    console.error(err);
+    setError("Failed to add folder");
+  }
+};
 
     //Loading Screen
     if (loading) {
@@ -170,76 +139,128 @@ const Todo: React.FC<TodoProps> = ({user}) => {
         return <p>{error}</p>
     }
 
+    
+
     return (
-        <>
+    <div className='app-layout'>
         <header className='header__title'>
             <h1 className='title'>Todo</h1>
         </header>
-        <div className='todo__container'>
-            <TodoInput
-                newTodo={newTodo}
-                setNewTodo={setNewTodo}
-                addTodo={addTodo}
-            />
-            <div className="filters">
-                <CustomButton 
-                label="All" 
-                hoverColor="Yellow" 
-                onClick={() => setFilter("all")}
-                active={filter === "all"}
+             <div className='sidebar'>
+                <h3>Folders</h3>
+                <CustomButton
+                onClick={() => setSelectedFolder(null)}
+                label='Inbox'
+                hoverColor='white'
                 />
-                 
-                <CustomButton 
-                label="Active" 
-                hoverColor="Red" 
-                onClick={() => setFilter("active")}
-                active={filter === "active"}
+                
+              {folders.map(folder => (
+                  <CustomButton
+                  key={folder.id}
+                  onClick={() => setSelectedFolder(folder.id)}
+                  label={folder.name}
+                  hoverColor='white'
                 />
-                <CustomButton 
-                label="Completed" 
-                hoverColor="Green" 
-                onClick={() => setFilter("completed")}
-                active={filter === "completed"}
+                
+                ))}
+                <input 
+                    value={newFolder}
+                    onChange={(e) => setNewFolder(e.target.value)}
+                    placeholder='New Folder'
                 />
-                <p>
-                    {activeCount} {activeCount === 1 ? "task" : "tasks"} remaining
-                </p>
-                {hasCompleted && (
-                    <CustomButton 
-                    label="Clear Completed" 
-                    hoverColor="Green" 
-                    onClick={clearCompleted}
-                    />
-                )}    
+
+                <CustomButton
+                hoverColor='green'
+                onClick={handleAddFolder}
+                label='Add Folder'
+                />  
             </div>
-            <TodoList 
-                filteredTodos={filteredTodos}
-                editId={editId}
-                editText={editText}
-                setEditText={setEditText}
-                startEdit={startEdit}
-                saveEdit={saveEdit}
-                deleteTodo={deleteTodo}
-                taskComplete={taskComplete}
-                setDeleteId={setDeleteId}
-            />
+        <div className='main-content'>
+
+            <div className='todo__container'>
+                <TodoInput
+                    newTodo={newTodo}
+                    setNewTodo={setNewTodo}
+                    addTodo={addTodo}
+                    />
+                <div className="filters">
+                    <CustomButton 
+                    label="All" 
+                    hoverColor="Yellow" 
+                    onClick={() => setFilter("all")}
+                    active={filter === "all"}
+                    />
+
+                    <CustomButton 
+                    label="Active" 
+                    hoverColor="Red" 
+                    onClick={() => setFilter("active")}
+                    active={filter === "active"}
+                    />
+                    <CustomButton 
+                    label="Completed" 
+                    hoverColor="Green" 
+                    onClick={() => setFilter("completed")}
+                    active={filter === "completed"}
+                    />
+                    </div>
+                    <div className='tasks__container'>
+
+                    <p>
+                        {activeCount} {activeCount === 1 ? "task" : "tasks"} remaining
+                    </p>
+                    {hasCompleted && (
+                        <CustomButton 
+                        label="Clear Completed" 
+                        hoverColor="Green" 
+                        onClick={clearCompleted}
+                        />
+                    )}    
+                </div>
+                {filteredTodos.length === 0 && (
+                  <p className="empty-state">
+                    {selectedFolder === null
+                      ? filter === "active"
+                        ? "No active tasks"
+                        : filter === "completed"
+                        ? "No completed tasks"
+                        : "No tasks yet, add one above"
+                      : "No tasks in this folder yet, add one above"}
+                  </p>
+                )}
+                {filteredTodos.length > 0 && (
+
+                    <TodoList 
+                    filteredTodos={filteredTodos}
+                    editId={editId}
+                    editText={editText}
+                    setEditText={setEditText}
+                    startEdit={startEdit}
+                    saveEdit={saveEdit}
+                    deleteTodo={deleteTodo}
+                    taskComplete={taskComplete}
+                    setDeleteId={setDeleteId}
+                    />
+                )}
+
+            </div>
         </div>
         {deleteId !== null && (
             <div className="delete-modal">
-        <p>Are you sure you want to delete this todo?</p>
-        <CustomButton 
-        label="Cancel" 
-        hoverColor="Green" 
-        onClick={() => setDeleteId(null)}
-        />
-        <CustomButton 
-        label="Delete" 
-        hoverColor="Red" 
-        onClick={() => deleteTodo(deleteId)}
-        />
-        </div>
+                <p>Are you sure you want to delete this todo?</p>
+                <CustomButton 
+                    label="Cancel" 
+                    hoverColor="Green" 
+                    onClick={() => setDeleteId(null)}
+                />
+                <CustomButton 
+                    label="Delete" 
+                    hoverColor="Red" 
+                    onClick={() => deleteTodo(deleteId)}
+                />
+            </div>
         )}
-        </>
+    </div>
         
     )
 }

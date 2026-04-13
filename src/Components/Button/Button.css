@@ -1,17 +1,93 @@
 .custom-button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: none;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.15s ease;
+  position: relative;
+  overflow: hidden;
 }
-.custom-button:hover {
-  border-color: var(--hover-color);
+
+.custom-button span {
+  position: absolute;
+  display: block;
+  background: var(--hover-color);
 }
+
+/* TOP */
+.custom-button span:nth-child(1) {
+  height: 2px;
+  width: 0;
+  top: 0;
+  left: 0;
+  transition: width 0.2s ease;
+}
+
+/* RIGHT */
+.custom-button span:nth-child(2) {
+  width: 2px;
+  height: 0;
+  top: 0;
+  right: 0;
+  transition: height 0.2s ease 0.2s;
+}
+
+/* BOTTOM */
+.custom-button span:nth-child(3) {
+  height: 2px;
+  width: 0;
+  bottom: 0;
+  right: 0;
+  transition: width 0.2s ease 0.4s;
+}
+
+/* LEFT */
+.custom-button span:nth-child(4) {
+  width: 2px;
+  height: 0;
+  bottom: 0;
+  left: 0;
+  transition: height 0.1s ease 0.5s;
+}
+
+/* HOVER TRIGGER */
+.custom-button:hover span:nth-child(1) {
+  width: 100%;
+}
+
+.custom-button:hover span:nth-child(2) {
+  height: 100%;
+}
+
+.custom-button:hover span:nth-child(3) {
+  width: 100%;
+}
+
+.custom-button:hover span:nth-child(4) {
+  height: 100%;
+}
+
+/*
+.custom-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--hover-color);
+  
+
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.4s ease;
+}
+
+
+.custom-button:hover::before {
+  clip-path: inset(0 0 0 0);
+}
+
 .custom-button:focus,
 .custom-button:focus-visible {
   outline: 4px auto var(--hover-color);
@@ -19,4 +95,6 @@
 
 .custom-button.active {
   outline: 4px auto var(--hover-color);
-}
+  transform: scale(0.96);
+  box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.5);
+}*/

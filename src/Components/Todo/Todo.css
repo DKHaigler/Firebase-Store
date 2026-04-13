@@ -40,6 +40,7 @@ li {
     display: flex;
     flex-direction: column;
     margin-top: 200px;
+    gap: 15px;
 }
 
 .todo-inner__container {
@@ -52,6 +53,10 @@ li {
     padding-bottom: 5px;
 }
 
+.todo-outer__container {
+    display: flex;
+
+}
 .todo-text {
     width: 75%;
     border-radius: 10px;
@@ -78,4 +83,67 @@ li {
     display: flex;
     justify-content: space-between;
     width: 15%;
+}
+
+.delete-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  transform: translate(-50%, -50%);
+  
+  background: linear-gradient(45deg, #333, #000);
+  border: 4px solid #999;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000;
+
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.sidebar {
+    background-color: #111;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    margin: 100px 0px 0px 0px;
+    gap: .5rem;
+}
+
+.app-layout {
+    display: flex;
+    height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    width: 80%;
+ 
+}
+
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.add-todo {
+    display: flex;
+    justify-content: center;
+    gap: .5rem;
+    
+}
+
+.save-todo {
+    display: flex;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.empty-state {
+  margin-top: 20px;
+  color: #888;
+  text-align: center;
+  font-style: italic;
 }

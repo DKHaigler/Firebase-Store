@@ -28,6 +28,10 @@ export const CustomButton: React.FC<ButtonProps> = ({
       onClick={onClick}
     >
       {label}
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
     </button>
   );
 };
