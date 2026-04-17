@@ -90,14 +90,13 @@ const Todo: React.FC<TodoProps> = ({user}) => {
 
     // Filter todos
     const filteredTodos = todos.filter(todo => {
-        if (selectedFolder === null) {
-        return !todo.folderId;
-        } 
-        if (todo.folderId !== selectedFolder) return false;
-        
+        const matchesFolder =
+            selectedFolder === null || todo.folderId === selectedFolder;
 
-        if (filter === "active") return !todo.completed;
-        if (filter === "completed") return todo.completed;
+        const matchesFilter =
+            filter === "active" ? !todo.completed : filter === "completed" ? todo.completed : true; 
+        if (!matchesFolder) return false;
+        if (!matchesFilter) return false;   
         return true;
     })
 
@@ -150,7 +149,7 @@ const Todo: React.FC<TodoProps> = ({user}) => {
                 <h3>Folders</h3>
                 <CustomButton
                 onClick={() => setSelectedFolder(null)}
-                label='Inbox'
+                label='All'
                 hoverColor='white'
                 />
                 

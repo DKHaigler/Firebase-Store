@@ -22,36 +22,52 @@
 .custom-button span:nth-child(1) {
   height: 2px;
   width: 0;
-  top: 0;
-  left: 0;
-  transition: width 0.2s ease;
+  top: 2px;
+  left: 8px;
+  transition: width 0.4s ease-in-out;
+}
+
+.custom-button:hover span:nth-child(1) {
+  width: calc(100% - 16px); 
 }
 
 /* RIGHT */
 .custom-button span:nth-child(2) {
   width: 2px;
   height: 0;
-  top: 0;
-  right: 0;
-  transition: height 0.2s ease 0.2s;
+  top: 8px;
+  right: 2px;
+  transition: height 0.4s ease-in-out ;
+}
+
+.custom-button:hover span:nth-child(2) {
+  height: calc(100% - 16px);
 }
 
 /* BOTTOM */
 .custom-button span:nth-child(3) {
   height: 2px;
   width: 0;
-  bottom: 0;
-  right: 0;
-  transition: width 0.2s ease 0.4s;
+  bottom: 2px;
+  right: 8px;
+  transition: width 0.4s ease-in-out ;
+}
+
+.custom-button:hover span:nth-child(3) {
+  width: calc(100% - 16px);
 }
 
 /* LEFT */
 .custom-button span:nth-child(4) {
   width: 2px;
   height: 0;
-  bottom: 0;
-  left: 0;
-  transition: height 0.1s ease 0.5s;
+  bottom: 8px;
+  left: 2px;
+  transition: height 0.4s ease-in-out;
+}
+
+.custom-button:hover span:nth-child(4) {
+  height: calc(100% - 16px);
 }
 
 /* HOVER TRIGGER */
@@ -71,30 +87,3 @@
   height: 100%;
 }
 
-/*
-.custom-button::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border: 1px solid var(--hover-color);
-  
-
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path 0.4s ease;
-}
-
-
-.custom-button:hover::before {
-  clip-path: inset(0 0 0 0);
-}
-
-.custom-button:focus,
-.custom-button:focus-visible {
-  outline: 4px auto var(--hover-color);
-}
-
-.custom-button.active {
-  outline: 4px auto var(--hover-color);
-  transform: scale(0.96);
-  box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.5);
-}*/
