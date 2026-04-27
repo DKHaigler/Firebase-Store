@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import { subscribeToFolders, addFolder } from "../services/folderService";
 import { Folder } from "../types/Folder";
 
-export const useFolders = (user: any) => {
+export const useFolders = (activeTeamId: string | null) => {
   const [folders, setFolders] = useState<Folder[]>([]);
 
   useEffect(() => {
-    if (!user) {
+    if (!activeTeamId) {
       setFolders([]);
       return;
     }
 
     const unsubscribe = subscribeToFolders(
-      user.uid,
+      activeTeamId,
       (snapshot: any) => {
         setFolders(
           snapshot.docs.map((doc: any) => ({
@@ -25,7 +25,7 @@ export const useFolders = (user: any) => {
     );
 
     return () => unsubscribe();
-  }, [user]);
+  }, [activeTeamId]);
 
   return { folders, addFolder };
 };

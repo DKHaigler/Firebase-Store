@@ -3,5 +3,6 @@ export type Todo = {
     text: string
     completed: boolean
     uid: string
+    teamId: string
     folderId?: string | null;
 }

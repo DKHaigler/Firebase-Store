@@ -1,5 +1,6 @@
 export type Folder = {
     id: string;
     name: string;
-    uid: string;
+    teamId: string;
+    createdBy: string;
 }

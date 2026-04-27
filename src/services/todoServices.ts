@@ -2,38 +2,27 @@ import {collection, addDoc, deleteDoc, doc, updateDoc, query, where, onSnapshot}
 
 import { db } from "../lib/firebase";
 
-export const subscribeToFolders = (uid: string, callback: any, onError: any) => {
-  const q = query(
-    collection(db, "folders"),
-    where("uid", "==", uid)
-  );
 
-  return onSnapshot(q, callback, onError);
-};
 
-export const addFolder = async (uid: string, name: string) => {
-  return await addDoc(collection(db, "folders"), {
-    name,
-    uid
-  });
-};
-
-export const subscribeToTodos = (uid: string, callback: any, onError: any) => {
+export const subscribeToTodos = (teamId: string, callback: any, onError: any) => {
     const q = query(
         collection(db, "todos"),
-        where("uid", "==", uid)
+        where("teamId", "==", teamId)
     );
 
     return onSnapshot(q, callback, onError);
 };
 
-export const addTodo = async (uid: string, text: string, folderId: string | null) => {
+export const addTodo = async (uid: string, teamId:string, text: string, folderId: string | null) => {
     return await addDoc(collection(db, "todos"), {
         text,
         completed: false,
         uid,
+        teamId,
         folderId: folderId ?? null
+        
     });
+    
 };
 
 export const deleteTodo = async (id: string) => {

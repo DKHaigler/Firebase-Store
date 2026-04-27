@@ -11,21 +11,15 @@ import {
   clearCompletedTodos
 } from "../services/todoServices";
 
-export const useTodos = (user: any) => {
+export const useTodos = (activeTeamId: string | null) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      setTodos([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
+    if (!activeTeamId) return;
 
     const unsubscribe = subscribeToTodos(
-      user.uid,
+      activeTeamId,
       (snapshot: any) => {
         setTodos(
           snapshot.docs.map((doc: any) => ({
@@ -42,7 +36,7 @@ export const useTodos = (user: any) => {
     );
 
     return () => unsubscribe();
-  }, [user]);
+  }, [activeTeamId]);
 
   return {
     todos,

@@ -11,12 +11,23 @@ function App() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [user, setUser] = useState<User | undefined>(undefined);
+  const [activeTeamId, setActiveTeamId] = useState<string | null>(null)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
         setUser(currentUser);
       
+         if (currentUser) {
+            const defaultTeamId = `personal_${currentUser.uid}`
+            setActiveTeamId(defaultTeamId);
+
+            console.log("SET TEAM ID:", defaultTeamId);
+          } else {
+            setActiveTeamId(null)
+            console.log("NO USER")
+          }
     })
+
 
     return () => unsubscribe();
   }, [])
@@ -80,7 +91,10 @@ function App() {
   
     return  (
       <div>
-        <Todo user={user} />
+        <Todo 
+        user={user}
+        activeTeamId={activeTeamId}
+        />
         <div className='user-logged__container'>
           <p>Logged in as: {user.email}</p>
           <CustomButton label="Sign Out" hoverColor="red" onClick={logOut}/>

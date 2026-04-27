@@ -10,11 +10,12 @@ import { useFolders } from '../../hooks/useFolders';
 
 type TodoProps = {
     user:any;
+    activeTeamId: string |null;
 };
 
-const Todo: React.FC<TodoProps> = ({user}) => {
-    const {todos, loading} = useTodos(user);
-    const {folders, addFolder} = useFolders(user);
+const Todo: React.FC<TodoProps> = ({user, activeTeamId}) => {
+    const {todos, loading} = useTodos(activeTeamId);
+    const {folders, addFolder} = useFolders(activeTeamId);
     const [newTodo, setNewTodo] = useState("");
     const [editId, setEditId] = useState<string | null>(null);
     const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -24,16 +25,24 @@ const Todo: React.FC<TodoProps> = ({user}) => {
     const [newFolder, setNewFolder] = useState("");
     const [selectedFolder, setSelectedFolder] = useState<string | null>(null)
 
+   
+
     // Fetch Todos from Firestore
 
     // Add a new Todo
     const addTodo = async () => {
+        console.log("DEBUG CREATE TODO:", {
+        uid: user?.uid,
+        teamId: activeTeamId,
+        text: newTodo,
+        folder: selectedFolder
+    });
         try {
 
-            if(!user) return;
+            if(!user || !activeTeamId) return;
             if (newTodo.trim() === '') return;
-
-            await addTodoService(user.uid, newTodo, selectedFolder);
+           
+            await addTodoService(user.uid, activeTeamId, newTodo, selectedFolder);
             setNewTodo('');
         } catch (err) {
             console.error(err)
@@ -118,11 +127,10 @@ const Todo: React.FC<TodoProps> = ({user}) => {
 
     // Add Folder
     const handleAddFolder = async () => {
-  if (!user) return;
+  if (!activeTeamId) return
   if (!newFolder.trim()) return;
-
   try {
-    await addFolder(user.uid, newFolder);
+    await addFolder(activeTeamId, newFolder);
     setNewFolder("");
   } catch (err) {
     console.error(err);
@@ -138,9 +146,9 @@ const Todo: React.FC<TodoProps> = ({user}) => {
         return <p>{error}</p>
     }
 
-    
 
     return (
+        
     <div className='app-layout'>
         <header className='header__title'>
             <h1 className='title'>Todo</h1>
@@ -175,7 +183,7 @@ const Todo: React.FC<TodoProps> = ({user}) => {
                 />  
             </div>
         <div className='main-content'>
-
+                
             <div className='todo__container'>
                 <TodoInput
                     newTodo={newTodo}
