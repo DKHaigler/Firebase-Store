@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { subscribeToFolders, addFolder } from "../services/folderService";
+import { subscribeToFolders } from "../services/folderService";
 import { Folder } from "../types/Folder";
+import { QuerySnapshot, DocumentData } from "firebase/firestore";
 
 export const useFolders = (activeTeamId: string | null) => {
   const [folders, setFolders] = useState<Folder[]>([]);
@@ -13,19 +14,25 @@ export const useFolders = (activeTeamId: string | null) => {
 
     const unsubscribe = subscribeToFolders(
       activeTeamId,
-      (snapshot: any) => {
-        setFolders(
-          snapshot.docs.map((doc: any) => ({
-            ...doc.data(),
-            id: doc.id
-          }))
-        );
+      (snapshot: QuerySnapshot<DocumentData>) => {
+        const mapped: Folder[] = snapshot.docs.map((doc) => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                name: data.name,
+                teamId: data.teamId,
+                createdBy: data.createdBy
+
+            }
+          });
+          setFolders(mapped)
       },
-      (err: any) => console.error(err)
+      (err: unknown) => 
+        console.error(err)
     );
 
     return () => unsubscribe();
   }, [activeTeamId]);
 
-  return { folders, addFolder };
+  return { folders };
 };

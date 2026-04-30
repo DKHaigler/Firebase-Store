@@ -1,7 +1,11 @@
-type Task = {
+export type TaskStatus = "todo" | "in-progress" | "done"
+
+
+export type Task = {
   id: string
   text: string
   teamId: string
   folderId: string
-  status: "todo" | "in-progress" | "done"
+  status: TaskStatus
+  createdBy: string
 }

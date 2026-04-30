@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { addTodo as addTodoService, deleteTodo as deleteTodoService, updateTodoText, toggleTodoComplete, clearCompletedTodos } from '../../services/todoServices';
+import { deleteTask, updateTaskText, updateTaskStatus, addTask, getNextStatus } from '../../services/taskServices';
+import { addFolder } from '../../services/folderService';
 import './Todo.css';
 import { TodoInput } from '../TodoInput/TodoInput';
 import { TodoList } from '../TodoList/TodoList';
 import { CustomButton } from '../Button/Button';
-import { useTodos } from '../../hooks/useTodos';
+import { useTasks } from '../../hooks/useTasks';
 import { useFolders } from '../../hooks/useFolders';
 
 
@@ -14,14 +15,15 @@ type TodoProps = {
 };
 
 const Todo: React.FC<TodoProps> = ({user, activeTeamId}) => {
-    const {todos, loading} = useTodos(activeTeamId);
-    const {folders, addFolder} = useFolders(activeTeamId);
+    const {tasks, loading} = useTasks(activeTeamId);
+    const {folders} = useFolders(activeTeamId);
+
     const [newTodo, setNewTodo] = useState("");
     const [editId, setEditId] = useState<string | null>(null);
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [editText, setEditText] = useState("");
     const [error,setError] = useState<string | null>(null);
-    const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+    const [filter, setFilter] = useState<"all" | "todo" | "in-progress" | "done">("all");
     const [newFolder, setNewFolder] = useState("");
     const [selectedFolder, setSelectedFolder] = useState<string | null>(null)
 
@@ -31,18 +33,12 @@ const Todo: React.FC<TodoProps> = ({user, activeTeamId}) => {
 
     // Add a new Todo
     const addTodo = async () => {
-        console.log("DEBUG CREATE TODO:", {
-        uid: user?.uid,
-        teamId: activeTeamId,
-        text: newTodo,
-        folder: selectedFolder
-    });
         try {
 
             if(!user || !activeTeamId) return;
             if (newTodo.trim() === '') return;
            
-            await addTodoService(user.uid, activeTeamId, newTodo, selectedFolder);
+            await addTask(user.uid, activeTeamId, newTodo, selectedFolder);
             setNewTodo('');
         } catch (err) {
             console.error(err)
@@ -53,33 +49,30 @@ const Todo: React.FC<TodoProps> = ({user, activeTeamId}) => {
     // Delete a Todo
     const deleteTodo = async (id: string) => {
         try{
-
-            console.log("Deleting:", id);
-            await deleteTodoService(id)
-            setError(null);
+            await deleteTask(id)
             setDeleteId(null)
         } catch (err) {
             console.error(err)
-            setError("failed to delete todo")
+            setError("failed to delete task")
         }
 
     }
 
     // Start editing a todo
-    const startEdit = (id: string, currentText: string) => {
+    const startEdit = (id: string, text: string) => {
         setEditId(id);
-        setEditText(currentText);
+        setEditText(text);
     }
 
     // Save the edited todo
     const saveEdit = async (id: string) => {
         try {
-            await updateTodoText(id, editText)
+            await updateTaskText(id, editText)
             setEditId(null); // Exiting the edit mode
             setEditText(''); // Clearing the edit text
         } catch (err) {
             console.error(err)
-            setError("Failed to save todo")
+            setError("Failed to save task")
         }
     }
 
@@ -87,60 +80,72 @@ const Todo: React.FC<TodoProps> = ({user, activeTeamId}) => {
     const taskComplete = async (id: string) => {
         try {
 
-            const todoUpdate = todos.find(t => t.id === id);
-            if (!todoUpdate) return;
-            await toggleTodoComplete(id, !todoUpdate.completed)
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+
+             const nextStatus = getNextStatus(task.status)
+                
+
+            await updateTaskStatus(id, nextStatus)
         } catch (err) {
             console.error(err)
-            setError("Failed to mark complete")
+            setError("Failed to update Task")
         }
         
     }
 
     // Filter todos
-    const filteredTodos = todos.filter(todo => {
+    const filteredTasks = tasks.filter(task => {
         const matchesFolder =
-            selectedFolder === null || todo.folderId === selectedFolder;
+            selectedFolder === null || task.folderId === selectedFolder;
 
         const matchesFilter =
-            filter === "active" ? !todo.completed : filter === "completed" ? todo.completed : true; 
-        if (!matchesFolder) return false;
-        if (!matchesFilter) return false;   
-        return true;
+            filter === "all" ? true : task.status === filter;
+
+        return matchesFolder && matchesFilter;
     })
 
     //Todo Counter
-    const activeCount = filteredTodos.filter(todo => !todo.completed).length;
+    const activeCount = tasks.filter(
+        (task) => task.status !== "done"
+    ).length;
+
+    //Task Complete
+    const hasCompleted = tasks.some(task => task.status === "done");
 
     //Delete Completed
     const clearCompleted = async () => {
         try {
-                await clearCompletedTodos(filteredTodos);
+                const completedTasks = tasks.filter(
+                    task => task.status === "done"
+                );
+                await Promise.all(
+                    completedTasks.map(task =>
+                        deleteTask(task.id)
+                    )
+                )
             }
           catch (err) {
             console.error(err);
-            setError("Failed to clear completed todos")
+            setError("Failed to clear completed tasks")
         }
     }
 
-    const hasCompleted = filteredTodos.some(todo => todo.completed);
-
     // Add Folder
     const handleAddFolder = async () => {
-  if (!activeTeamId) return
-  if (!newFolder.trim()) return;
-  try {
-    await addFolder(activeTeamId, newFolder);
-    setNewFolder("");
-  } catch (err) {
-    console.error(err);
-    setError("Failed to add folder");
-  }
-};
+        try {
+          if (!activeTeamId || !newFolder.trim()) return;
+            await addFolder(activeTeamId, newFolder, user.uid);
+            setNewFolder("");
+          } catch (err) {
+            console.error(err);
+            setError("Failed to add folder");
+          }
+        };
 
     //Loading Screen
     if (loading) {
-            return <p>Loading todos...</p>
+            return <p>Loading tasks...</p>
         }
     if (error) {
         return <p>{error}</p>
@@ -193,22 +198,29 @@ const Todo: React.FC<TodoProps> = ({user, activeTeamId}) => {
                 <div className="filters">
                     <CustomButton 
                     label="All" 
-                    hoverColor="Yellow" 
+                    hoverColor="white" 
                     onClick={() => setFilter("all")}
                     active={filter === "all"}
                     />
 
+                    <CustomButton
+                    label='Todo'
+                    hoverColor='red'
+                    onClick={() => setFilter("todo")}
+                    active={filter === "todo"}
+                    />
+
                     <CustomButton 
-                    label="Active" 
-                    hoverColor="Red" 
-                    onClick={() => setFilter("active")}
-                    active={filter === "active"}
+                    label="In-Progress" 
+                    hoverColor="yellow" 
+                    onClick={() => setFilter("in-progress")}
+                    active={filter === "in-progress"}
                     />
                     <CustomButton 
-                    label="Completed" 
-                    hoverColor="Green" 
-                    onClick={() => setFilter("completed")}
-                    active={filter === "completed"}
+                    label="Done" 
+                    hoverColor="green" 
+                    onClick={() => setFilter("done")}
+                    active={filter === "done"}
                     />
                     </div>
                     <div className='tasks__container'>
@@ -224,21 +236,15 @@ const Todo: React.FC<TodoProps> = ({user, activeTeamId}) => {
                         />
                     )}    
                 </div>
-                {filteredTodos.length === 0 && (
-                  <p className="empty-state">
-                    {selectedFolder === null
-                      ? filter === "active"
-                        ? "No active tasks"
-                        : filter === "completed"
-                        ? "No completed tasks"
-                        : "No tasks yet, add one above"
-                      : "No tasks in this folder yet, add one above"}
-                  </p>
-                )}
-                {filteredTodos.length > 0 && (
+              {filteredTasks.length === 0 && (
+            <p className="empty-state">
+              No tasks here yet
+            </p>
+              )}
+                {filteredTasks.length > 0 && (
 
                     <TodoList 
-                    filteredTodos={filteredTodos}
+                    filteredTasks={filteredTasks}
                     editId={editId}
                     editText={editText}
                     setEditText={setEditText}
@@ -254,7 +260,7 @@ const Todo: React.FC<TodoProps> = ({user, activeTeamId}) => {
         </div>
         {deleteId !== null && (
             <div className="delete-modal">
-                <p>Are you sure you want to delete this todo?</p>
+                <p>Are you sure you want to delete this task?</p>
                 <CustomButton 
                     label="Cancel" 
                     hoverColor="Green" 

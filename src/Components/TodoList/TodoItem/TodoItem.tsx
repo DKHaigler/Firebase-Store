@@ -1,8 +1,8 @@
 import { CustomButton } from "../../Button/Button"
-import { Todo } from "../../../types/Todo"
+import { Task } from "../../../types/Task"; 
 
 type TodoItemProps = {
-  todo: Todo;
+  task: Task;
   editId: string | null;
   editText: string;
   setEditText: React.Dispatch<React.SetStateAction<string>>;
@@ -13,31 +13,44 @@ type TodoItemProps = {
   setDeleteId: (id:string) => void;
 };
 
-export const TodoItem = ({ todo, editId, editText, setEditText, saveEdit, taskComplete, startEdit, setDeleteId, }: TodoItemProps) => {
+export const TodoItem = ({ task, editId, editText, setEditText, saveEdit, taskComplete, startEdit, setDeleteId, }: TodoItemProps) => {
     return(
         <li className='todo-outer__container'>
             {
-                editId === todo.id ? (
+                editId === task.id ? (
                     <div className="save-todo">
                     <input 
                         type="text"
                         value={editText}
                         onChange={(event) => setEditText(event.target.value)}
                     />
-                     <CustomButton label="Save" hoverColor="green" onClick={() => editId && saveEdit(editId)}/>
+                     <CustomButton 
+                        label="Save" 
+                        hoverColor="green" 
+                        onClick={() => saveEdit(task.id)}/>
                     </div>
                 ) : (
                     <div className='todo-inner__container'>
-                    <input type="checkbox" checked={todo.completed} onChange={() => taskComplete(todo.id)} />
-                        <div className={todo.completed ? "completed": "todo-text"}>
-                        {todo.text}
+                    <input 
+                        type="checkbox" 
+                        checked={task.status === "done"} 
+                        onChange={() => taskComplete(task.id)} />
+                        <div className={
+                            task.status === "done" ? "in-progress" : "todo-text"
+                            }>
+                        {task.text}
                         </div>
                         <div className='button__container'>
-                        <CustomButton label="Edit" hoverColor="blue" onClick={() => startEdit(todo.id, todo.text)}/>
-                        <CustomButton label="Delete" hoverColor="red" onClick={() => {
+                        <CustomButton label="Edit" 
+                        hoverColor="blue" 
+                        onClick={() => startEdit(task.id, task.text)}/>
+                        <CustomButton 
+                        label="Delete" 
+                        hoverColor="red" 
+                        onClick={() => {
 
                             console.log("Delete Clicked");
-                            setDeleteId(todo.id)}}/>
+                            setDeleteId(task.id)}}/>
                         
                         </div>
                     </div>

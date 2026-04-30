@@ -1,8 +1,8 @@
 import { TodoItem } from "./TodoItem/TodoItem";
-import { Todo } from "../../types/Todo";
+import { Task } from "../../types/Task";
 
 type TodoListProps = {
-  filteredTodos: Todo[];
+  filteredTasks: Task[];
   editId: string | null;
   editText: string;
   setEditText: React.Dispatch<React.SetStateAction<string>>;
@@ -14,7 +14,7 @@ type TodoListProps = {
 };
 
 export const TodoList:React.FC<TodoListProps> = ({
-    filteredTodos,
+    filteredTasks,
     editId,
     editText,
     setEditText,
@@ -26,10 +26,10 @@ export const TodoList:React.FC<TodoListProps> = ({
 }) => {
     return (
         <ul>
-            {filteredTodos.map((todo) =>(
+            {filteredTasks.map((task) =>(
                 <TodoItem
-                    key={todo.id}
-                    todo={todo}
+                    key={task.id}
+                    task={task}
                     editId={editId}
                     editText={editText}
                     setEditText={setEditText}
