@@ -1,108 +1,54 @@
 import './App.css';
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { useState, useEffect } from 'react';
-import { auth } from './lib/firebase';
-import Todo  from './Components/Todo';
-import { CustomButton } from './Components/Button/Button';
 import { SignUpIn } from './Components/SignUpIn/SignUpIn';
-import { User } from "firebase/auth";
+import { Header } from './Components/Layout/Header/header';
+import { useAuth } from './context/AuthContext';
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import HomePage from "./pages/Homepage/HomePage";
+import TasksPage from "./pages/TasksPage/TasksPage";
+import InboxPage from "./pages/InboxPage/InboxPage";
+
+
 
 function App() {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [user, setUser] = useState<User | undefined>(undefined);
-  const [activeTeamId, setActiveTeamId] = useState<string | null>(null)
+  const { user, loading, signIn, signUp} = useAuth() 
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-        setUser(currentUser);
-      
-         if (currentUser) {
-            const defaultTeamId = `personal_${currentUser.uid}`
-            setActiveTeamId(defaultTeamId);
-
-            console.log("SET TEAM ID:", defaultTeamId);
-          } else {
-            setActiveTeamId(null)
-            console.log("NO USER")
-          }
-    })
-
-
-    return () => unsubscribe();
-  }, [])
-
-    //Sign Up
-    const signUp = () => {
-      createUserWithEmailAndPassword(auth, email, password)
-      .then(userCredential => {
-        console.log('User signed up:', userCredential.user);
-      })
-      .catch(error => {
-        console.error('Error signing up:', error);
-      });
-    }
-
-    //Sign In
-    const signIn = () => {
-      signInWithEmailAndPassword(auth, email, password)
-      .then(userCredential => {
-        console.log('User signed in:', userCredential.user);
-      })
-      .catch(error => {
-        console.error('Error signing in:', error);
-      });
-    }
-    //Sign out
-    const logOut = () => {
-      signOut(auth)
-      .then(() => {
-        console.log('User signed out');
-      })
-      .catch(error => {
-        console.error('Error signing out:', error);
-      });
-    }
-
-    
-    if (user ===undefined) {
+    if (loading) {
       return <p>Loading...</p>
     }
 
-    if (user===null)  return (
+    if (!user) {
+      return (
     <>
-
     <div>
           <>
-          <p>Firestore Authentication</p>
-          <SignUpIn 
-            signIn={signIn}
-            signUp={signUp}
-            email={email}
-            password={password}
-            setEmail={setEmail}
-            setPassword={setPassword}
+          <p>Task Manager</p>
+          <SignUpIn
+          signIn={signIn}
+          signUp={signUp}
           />
           </>
     </div>
-
     </>
-  )
-  
+      )
+    }
     return  (
-      <div>
-        <Todo 
-        user={user}
-        activeTeamId={activeTeamId}
-        />
-        <div className='user-logged__container'>
-          <p>Logged in as: {user.email}</p>
-          <CustomButton label="Sign Out" hoverColor="red" onClick={logOut}/>
-        </div>
-      </div>
-    
-    )
-  
-}
+      <BrowserRouter>
 
+      <Header 
+      user={user}
+      />
+
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+
+        <Route path="/tasks" element={<TasksPage user={user}/>} />
+
+        <Route path="/inbox" element={<InboxPage />} />
+      </Routes>
+
+    </BrowserRouter>
+    )
+}
 export default App;

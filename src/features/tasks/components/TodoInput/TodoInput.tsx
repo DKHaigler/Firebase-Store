@@ -1,4 +1,4 @@
-import { CustomButton } from "../Button/Button"
+import { CustomButton } from "../../../../Components/UI/Button/Button"
 
 type TodoInputProps = {
   newTodo: string;

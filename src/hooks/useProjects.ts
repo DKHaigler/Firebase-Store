@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
-import { subscribeToFolders } from "../services/folderService";
-import { Folder } from "../types/Folder";
+import { subscribeToProjects } from "../services/projectService";
+import { Project } from "../types/Project";
 import { QuerySnapshot, DocumentData } from "firebase/firestore";
+import { useTeam } from "../context/TeamContext";
 
-export const useFolders = (activeTeamId: string | null) => {
-  const [folders, setFolders] = useState<Folder[]>([]);
+export const useProjects = () => {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const {activeTeamId} = useTeam()
 
   useEffect(() => {
     if (!activeTeamId) {
-      setFolders([]);
+      setProjects([]);
       return;
     }
 
-    const unsubscribe = subscribeToFolders(
+    const unsubscribe = subscribeToProjects(
       activeTeamId,
       (snapshot: QuerySnapshot<DocumentData>) => {
-        const mapped: Folder[] = snapshot.docs.map((doc) => {
+        const mapped: Project[] = snapshot.docs.map((doc) => {
             const data = doc.data();
             return {
                 id: doc.id,
@@ -25,7 +27,7 @@ export const useFolders = (activeTeamId: string | null) => {
 
             }
           });
-          setFolders(mapped)
+          setProjects(mapped)
       },
       (err: unknown) => 
         console.error(err)
@@ -34,5 +36,5 @@ export const useFolders = (activeTeamId: string | null) => {
     return () => unsubscribe();
   }, [activeTeamId]);
 
-  return { folders };
+  return { projects };
 };

@@ -2,7 +2,7 @@ import {collection, addDoc, deleteDoc, doc, updateDoc, query, where, onSnapshot,
 
 import { db } from "../lib/firebase";
 
-import { TaskStatus } from "../types/Task";
+import { TaskStatus } from "../features/tasks/types/Task";
 
 
 export const subscribeToTasks = (
@@ -17,15 +17,17 @@ export const subscribeToTasks = (
     return onSnapshot(q, callback, onError);
 };
 
+
+
 export const addTask = async (
     uid: string,
     teamId:string,
     text: string,
-    folderId: string | null) => {
+    projectId: string | null) => {
     return await addDoc(collection(db, "tasks"), {
         text,
         teamId,
-        folderId: folderId,
+        projectId: projectId,
         status: "todo",
         createdBy:uid
     });

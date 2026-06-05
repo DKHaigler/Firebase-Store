@@ -1,44 +1,45 @@
 import { useState } from 'react';
 import { deleteTask, updateTaskText, updateTaskStatus, addTask, getNextStatus } from '../../services/taskServices';
-import { addFolder } from '../../services/folderService';
-import './Todo.css';
-import { TodoInput } from '../TodoInput/TodoInput';
-import { TodoList } from '../TodoList/TodoList';
-import { CustomButton } from '../Button/Button';
-import { useTasks } from '../../hooks/useTasks';
-import { useFolders } from '../../hooks/useFolders';
+import { addProject } from '../../services/projectService';
+import './TasksPage.css';
+import { TodoInput } from '../../features/tasks/components/TodoInput/TodoInput';
+import { TodoList } from '../../features/tasks/components/TodoList/TodoList';
+import { CustomButton } from '../../Components/UI/Button/Button'; 
+import { useTasks } from '../../features/tasks/hooks/useTasks';
+import { useProjects } from '../../hooks/useProjects';
+import { useTeam } from '../../context/TeamContext';
 
 
 type TodoProps = {
     user:any;
-    activeTeamId: string |null;
 };
 
-const Todo: React.FC<TodoProps> = ({user, activeTeamId}) => {
-    const {tasks, loading} = useTasks(activeTeamId);
-    const {folders} = useFolders(activeTeamId);
-
+const TasksPage: React.FC<TodoProps> = ({user}) => {
+    const {tasks, loading} = useTasks();
+    const {projects} = useProjects();
+    
     const [newTodo, setNewTodo] = useState("");
     const [editId, setEditId] = useState<string | null>(null);
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [editText, setEditText] = useState("");
     const [error,setError] = useState<string | null>(null);
     const [filter, setFilter] = useState<"all" | "todo" | "in-progress" | "done">("all");
-    const [newFolder, setNewFolder] = useState("");
-    const [selectedFolder, setSelectedFolder] = useState<string | null>(null)
-
-   
-
+    const [newProject, setNewProject] = useState("");
+    const [selectedProject, setSelectedProject] = useState<string | null>(null)
+    const {activeTeamId} = useTeam();
+    
+    
     // Fetch Todos from Firestore
-
+    
+    
     // Add a new Todo
     const addTodo = async () => {
         try {
-
+            
             if(!user || !activeTeamId) return;
             if (newTodo.trim() === '') return;
            
-            await addTask(user.uid, activeTeamId, newTodo, selectedFolder);
+            await addTask(user.uid, activeTeamId, newTodo, selectedProject);
             setNewTodo('');
         } catch (err) {
             console.error(err)
@@ -96,13 +97,13 @@ const Todo: React.FC<TodoProps> = ({user, activeTeamId}) => {
 
     // Filter todos
     const filteredTasks = tasks.filter(task => {
-        const matchesFolder =
-            selectedFolder === null || task.folderId === selectedFolder;
+        const matchesProject =
+            selectedProject === null || task.projectId === selectedProject;
 
         const matchesFilter =
             filter === "all" ? true : task.status === filter;
 
-        return matchesFolder && matchesFilter;
+        return matchesProject && matchesFilter;
     })
 
     //Todo Counter
@@ -131,15 +132,15 @@ const Todo: React.FC<TodoProps> = ({user, activeTeamId}) => {
         }
     }
 
-    // Add Folder
-    const handleAddFolder = async () => {
+    // Add Project
+    const handleAddProject = async () => {
         try {
-          if (!activeTeamId || !newFolder.trim()) return;
-            await addFolder(activeTeamId, newFolder, user.uid);
-            setNewFolder("");
+          if (!activeTeamId || !newProject.trim()) return;
+            await addProject(activeTeamId, newProject, user.uid);
+            setNewProject("");
           } catch (err) {
             console.error(err);
-            setError("Failed to add folder");
+            setError("Failed to add project");
           }
         };
 
@@ -155,36 +156,34 @@ const Todo: React.FC<TodoProps> = ({user, activeTeamId}) => {
     return (
         
     <div className='app-layout'>
-        <header className='header__title'>
-            <h1 className='title'>Todo</h1>
-        </header>
+        
              <div className='sidebar'>
-                <h3>Folders</h3>
+                <h3>Projects</h3>
                 <CustomButton
-                onClick={() => setSelectedFolder(null)}
+                onClick={() => setSelectedProject(null)}
                 label='All'
                 hoverColor='white'
                 />
                 
-              {folders.map(folder => (
+              {projects.map(project => (
                   <CustomButton
-                  key={folder.id}
-                  onClick={() => setSelectedFolder(folder.id)}
-                  label={folder.name}
+                  key={project.id}
+                  onClick={() => setSelectedProject(project.id)}
+                  label={project.name}
                   hoverColor='white'
                 />
                 
                 ))}
                 <input 
-                    value={newFolder}
-                    onChange={(e) => setNewFolder(e.target.value)}
-                    placeholder='New Folder'
+                    value={newProject}
+                    onChange={(e) => setNewProject(e.target.value)}
+                    placeholder='New Project'
                 />
 
                 <CustomButton
                 hoverColor='green'
-                onClick={handleAddFolder}
-                label='Add Folder'
+                onClick={handleAddProject}
+                label='Add Project'
                 />  
             </div>
         <div className='main-content'>
@@ -278,4 +277,4 @@ const Todo: React.FC<TodoProps> = ({user, activeTeamId}) => {
     )
 }
 
-export default Todo;
+export default TasksPage;

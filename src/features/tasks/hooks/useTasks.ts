@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { QuerySnapshot, DocumentData } from "firebase/firestore";
 import { Task } from "../types/Task";
+import { useTeam } from "../../../context/TeamContext";
 
 
 import {
   subscribeToTasks,
-} from "../services/taskServices";
+} from "../../../services/taskServices";
 
-export const useTasks = (activeTeamId: string | null) => {
+export const useTasks = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const {activeTeamId} = useTeam();
 
   useEffect(() => {
     setTasks([]);
@@ -29,7 +31,7 @@ export const useTasks = (activeTeamId: string | null) => {
               id: doc.id,
               text: data.text,
               teamId: data.teamId,
-              folderId: data.folderId,
+              projectId: data.projectId,
               status: data.status,
               createdBy: data.createdBy
             };

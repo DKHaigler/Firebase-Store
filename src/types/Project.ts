@@ -1,4 +1,4 @@
-export type Folder = {
+export type Project = {
     id: string;
     name: string;
     teamId: string;

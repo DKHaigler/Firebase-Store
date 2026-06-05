@@ -5,7 +5,7 @@ export type Task = {
   id: string
   text: string
   teamId: string
-  folderId: string
+  projectId: string
   status: TaskStatus
   createdBy: string
 }

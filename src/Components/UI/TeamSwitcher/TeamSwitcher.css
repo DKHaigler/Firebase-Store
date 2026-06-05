@@ -1,0 +1,29 @@
+.team-switcher {
+  display: flex;
+  width: auto;
+  border-radius: 25px;
+  margin: 20px 10px 20px 10px;
+}
+
+.dropdown {
+  position: absolute;
+  background: #1a1a1a;
+  border-radius: 20px;
+  padding: 8px;
+  margin-top: 40px;
+  width: 150px;
+}
+
+
+.dropdown-item {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #333;
+}
+
+.dropdown-item.active {
+  font-weight: bold;
+}

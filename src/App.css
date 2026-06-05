@@ -28,3 +28,8 @@ p {
   align-items: center;
 }
 
+.top-bar {
+  top: 150px;
+  position: absolute;
+
+}

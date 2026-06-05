@@ -1,0 +1,27 @@
+.sliding-toggle {
+  position: relative;
+  display: grid;
+  background: #1e1e1e;
+  border-radius: 999px;
+  padding: 4px;
+  overflow: hidden;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: calc(100% - 8px);
+  background: white;
+  border-radius: 999px;
+  transition: transform 0.25s ease;
+}
+
+.toggle-button {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+  border: none;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
