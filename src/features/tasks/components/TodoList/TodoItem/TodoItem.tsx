@@ -1,5 +1,6 @@
 import { CustomButton } from "../../../../../Components/UI/Button/Button"
 import { Task } from "../../../types/Task"; 
+import { isTaskOverdue } from "../../../../../Components/Utils/TaskRules";
 
 type TodoItemProps = {
   task: Task;
@@ -13,12 +14,15 @@ type TodoItemProps = {
   setDeleteId: (id:string) => void;
 };
 
+
 export const TodoItem = ({ task, editId, editText, setEditText, saveEdit, taskComplete, startEdit, setDeleteId, }: TodoItemProps) => {
+    console.log(task);
+    const overdue = isTaskOverdue(task);
     return(
         <li className='todo-outer__container'>
             {
                 editId === task.id ? (
-                    <div className="save-todo">
+                <div className="save-todo">
                     <input 
                         type="text"
                         value={editText}
@@ -34,26 +38,28 @@ export const TodoItem = ({ task, editId, editText, setEditText, saveEdit, taskCo
                     <input 
                         type="checkbox" 
                         checked={task.status === "done"} 
-                        onChange={() => taskComplete(task.id)} />
-                        <div className={
-                            task.status === "done" ? "in-progress" : "todo-text"
-                            }>
-                        {task.text}
-                        </div>
-                        <div className='button__container'>
-                        <CustomButton label="Edit" 
-                        hoverColor="blue" 
-                        onClick={() => startEdit(task.id, task.text)}/>
-                        <CustomButton 
-                        label="Delete" 
-                        hoverColor="red" 
-                        onClick={() => {
-
-                            console.log("Delete Clicked");
-                            setDeleteId(task.id)}}/>
-                        
-                        </div>
+                        onChange={() => taskComplete(task.id)} 
+                    />
+                    <div className={
+                        task.status === "done" ? "in-progress" : "todo-text"
+                        }>
+                    {task.text}
+                    {overdue && <span>🔴 Overdue</span>}
                     </div>
+                    <div className='button__container'>
+                        <CustomButton label="Edit" 
+                            hoverColor="blue" 
+                            onClick={() => startEdit(task.id, task.text)}
+                        />
+                        <CustomButton 
+                            label="Delete" 
+                            hoverColor="red" 
+                            onClick={() => {
+                            console.log("Delete Clicked");
+                            setDeleteId(task.id)}}
+                        />
+                    </div>
+                </div>
                 )
             }
         </li>

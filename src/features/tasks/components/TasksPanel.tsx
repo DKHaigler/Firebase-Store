@@ -30,6 +30,7 @@ export const TasksPanel: React.FC<TasksPanelProps> = ({ user }) => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [dueDate, setDueDate] = useState("")
 
   const [filter, setFilter] = useState<
     "all" | "todo" | "in-progress" | "done"
@@ -41,7 +42,7 @@ export const TasksPanel: React.FC<TasksPanelProps> = ({ user }) => {
       if (!user || !activeTeamId) return;
       if (newTodo.trim() === "") return;
 
-      await addTask(user.uid, activeTeamId, newTodo, null);
+      await addTask(user.uid, activeTeamId, newTodo, null, dueDate);
 
       setNewTodo("");
     } catch (err) {
@@ -142,7 +143,10 @@ export const TasksPanel: React.FC<TasksPanelProps> = ({ user }) => {
       <TodoInput
         newTodo={newTodo}
         setNewTodo={setNewTodo}
+        dueDate={dueDate}
+        setDueDate={setDueDate}
         addTodo={addTodo}
+
       />
 
       <div className="filters">

@@ -33,7 +33,8 @@ export const useTasks = () => {
               teamId: data.teamId,
               projectId: data.projectId,
               status: data.status,
-              createdBy: data.createdBy
+              createdBy: data.createdBy,
+              dueDate: data.dueDate
             };
           });
         setTasks(mappedTasks)

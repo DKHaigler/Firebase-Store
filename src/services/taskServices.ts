@@ -5,6 +5,7 @@ import { db } from "../lib/firebase";
 import { TaskStatus } from "../features/tasks/types/Task";
 
 
+
 export const subscribeToTasks = (
     teamId: string,
     callback: (snapshot: QuerySnapshot<DocumentData>) => void,
@@ -23,13 +24,15 @@ export const addTask = async (
     uid: string,
     teamId:string,
     text: string,
-    projectId: string | null) => {
+    projectId: string | null,
+    dueDate: string ) => {
     return await addDoc(collection(db, "tasks"), {
         text,
         teamId,
         projectId: projectId,
         status: "todo",
-        createdBy:uid
+        createdBy:uid,
+        dueDate
     });
     
 };

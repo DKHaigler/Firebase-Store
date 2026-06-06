@@ -1,7 +1,7 @@
 import {  addDoc,  collection,  getDocs,  query,  where,} from "firebase/firestore";
 
 import { db } from "../lib/firebase";
-import { Member } from "../types/Member";
+import { Member } from "../types/Members";
 
 export const createMember = async (
   userId: string,
@@ -15,9 +15,7 @@ export const createMember = async (
   });
 };
 
-export const getMembersByTeam = async (
-  teamId: string
-): Promise<Member[]> => {
+export const getMembersByTeam = async (teamId:string): Promise<Member[]> => {
   const q = query(
     collection(db, "members"),
     where("teamId", "==", teamId)
@@ -25,8 +23,9 @@ export const getMembersByTeam = async (
 
   const snapshot = await getDocs(q);
 
-  return snapshot.docs.map(
-    (doc) => doc.data() as Member
-  );
-  
+  const members: Member[] = snapshot.docs.map((doc) => ({
+    ...(doc.data() as Member),
+  }));
+
+  return members;
 };

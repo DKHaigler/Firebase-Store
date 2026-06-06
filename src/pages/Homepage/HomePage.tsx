@@ -4,7 +4,6 @@ import { SlidingToggle } from "../../Components/UI/ViewToggle/ViewToggle";
 import { getGreeting } from "../../Components/Utils/Greeting";
 import { TeamView } from "./TeamView";
 import { ProjectView } from "./ProjectView";
-import { Member } from "../../types/Member";
 
 
 const HomePage = () => {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Member } from "../../types/Member";
+import { Member } from "../../types/Members";
 import { getMembersByTeam } from "../../services/membersService";
 import { useTeam } from "../../context/TeamContext";
 

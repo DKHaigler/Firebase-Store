@@ -19,6 +19,7 @@ const TasksPage: React.FC<TodoProps> = ({user}) => {
     const {projects} = useProjects();
     
     const [newTodo, setNewTodo] = useState("");
+    const [dueDate, setDueDate] = useState("")
     const [editId, setEditId] = useState<string | null>(null);
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [editText, setEditText] = useState("");
@@ -39,7 +40,7 @@ const TasksPage: React.FC<TodoProps> = ({user}) => {
             if(!user || !activeTeamId) return;
             if (newTodo.trim() === '') return;
            
-            await addTask(user.uid, activeTeamId, newTodo, selectedProject);
+            await addTask(user.uid, activeTeamId, newTodo, selectedProject, dueDate);
             setNewTodo('');
         } catch (err) {
             console.error(err)
@@ -144,6 +145,10 @@ const TasksPage: React.FC<TodoProps> = ({user}) => {
           }
         };
 
+    
+    // OverDue
+
+
     //Loading Screen
     if (loading) {
             return <p>Loading tasks...</p>
@@ -192,6 +197,8 @@ const TasksPage: React.FC<TodoProps> = ({user}) => {
                 <TodoInput
                     newTodo={newTodo}
                     setNewTodo={setNewTodo}
+                    dueDate={dueDate}
+                    setDueDate={setDueDate}
                     addTodo={addTodo}
                     />
                 <div className="filters">
