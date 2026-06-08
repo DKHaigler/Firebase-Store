@@ -8,5 +8,6 @@ export type Task = {
   projectId: string
   status: TaskStatus
   createdBy: string
+  assignedTo: string
   dueDate?: string; 
 }

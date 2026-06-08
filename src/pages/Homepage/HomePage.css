@@ -1,0 +1,55 @@
+.home {
+padding: 100px;
+}
+.home__header { 
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+}
+
+.team-view {
+    display: flex;
+    flex-direction: row;
+}
+
+.greeting__container {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    align-items: flex-start;
+    margin: 50px;
+}
+/* Members*/
+.members__container { 
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.members-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.members-card {
+    max-width: 300px;
+    max-height: 175px;
+    background-color: orange;
+    border-radius: 20px;
+    padding: 40px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Overdue*/
+.overdue__container {
+    width: 40%;
+}
+
+.overdue-tasks {
+    background-color: orange;
+    width: 300px;
+    height: 500px;
+    border-radius: 20px;
+}

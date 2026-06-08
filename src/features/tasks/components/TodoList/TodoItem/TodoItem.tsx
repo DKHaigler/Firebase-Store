@@ -7,7 +7,7 @@ type TodoItemProps = {
   editId: string | null;
   editText: string;
   setEditText: React.Dispatch<React.SetStateAction<string>>;
-  saveEdit: (id: string) => void;
+  saveEdit: (id: string, text:string) => void;
   taskComplete: (id: string) => void;
   startEdit: (id: string, text: string) => void;
   deleteTodo: (id: string) => void;
@@ -16,7 +16,6 @@ type TodoItemProps = {
 
 
 export const TodoItem = ({ task, editId, editText, setEditText, saveEdit, taskComplete, startEdit, setDeleteId, }: TodoItemProps) => {
-    console.log(task);
     const overdue = isTaskOverdue(task);
     return(
         <li className='todo-outer__container'>
@@ -31,7 +30,7 @@ export const TodoItem = ({ task, editId, editText, setEditText, saveEdit, taskCo
                      <CustomButton 
                         label="Save" 
                         hoverColor="green" 
-                        onClick={() => saveEdit(task.id)}/>
+                        onClick={() => saveEdit(task.id, editText)}/>
                     </div>
                 ) : (
                     <div className='todo-inner__container'>

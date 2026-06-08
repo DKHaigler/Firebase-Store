@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { deleteTask, updateTaskText, updateTaskStatus, addTask, getNextStatus } from '../../services/taskServices';
+import { useState, useEffect } from 'react';
 import { addProject } from '../../services/projectService';
 import './TasksPage.css';
 import { TodoInput } from '../../features/tasks/components/TodoInput/TodoInput';
@@ -8,7 +7,11 @@ import { CustomButton } from '../../Components/UI/Button/Button';
 import { useTasks } from '../../features/tasks/hooks/useTasks';
 import { useProjects } from '../../hooks/useProjects';
 import { useTeam } from '../../context/TeamContext';
-
+import { TasksStats } from '../../features/tasks/components/TaskStats';
+import { TasksFilter } from '../../features/tasks/components/TaskFilters';
+import { useTaskActions } from '../../features/tasks/hooks/useTasksActions';
+import { getMembersByTeam } from '../../services/membersService';
+import { Member } from '../../types/Members';
 
 type TodoProps = {
     user:any;
@@ -17,6 +20,7 @@ type TodoProps = {
 const TasksPage: React.FC<TodoProps> = ({user}) => {
     const {tasks, loading} = useTasks();
     const {projects} = useProjects();
+    const [members, setMembers] = useState<Member[]>([]);
     
     const [newTodo, setNewTodo] = useState("");
     const [dueDate, setDueDate] = useState("")
@@ -28,72 +32,14 @@ const TasksPage: React.FC<TodoProps> = ({user}) => {
     const [newProject, setNewProject] = useState("");
     const [selectedProject, setSelectedProject] = useState<string | null>(null)
     const {activeTeamId} = useTeam();
+    const { addTodo, deleteTodo, saveEdit, taskComplete, clearCompleted, error: actionError,} = useTaskActions({ user, activeTeamId, tasks,});
+    const [ assignedTo, setAssignedTo ] = useState<string>("")
     
-    
-    // Fetch Todos from Firestore
-    
-    
-    // Add a new Todo
-    const addTodo = async () => {
-        try {
-            
-            if(!user || !activeTeamId) return;
-            if (newTodo.trim() === '') return;
-           
-            await addTask(user.uid, activeTeamId, newTodo, selectedProject, dueDate);
-            setNewTodo('');
-        } catch (err) {
-            console.error(err)
-            setError("Failed to add todo")
-        }
-        }
-
-    // Delete a Todo
-    const deleteTodo = async (id: string) => {
-        try{
-            await deleteTask(id)
-            setDeleteId(null)
-        } catch (err) {
-            console.error(err)
-            setError("failed to delete task")
-        }
-
-    }
 
     // Start editing a todo
     const startEdit = (id: string, text: string) => {
         setEditId(id);
         setEditText(text);
-    }
-
-    // Save the edited todo
-    const saveEdit = async (id: string) => {
-        try {
-            await updateTaskText(id, editText)
-            setEditId(null); // Exiting the edit mode
-            setEditText(''); // Clearing the edit text
-        } catch (err) {
-            console.error(err)
-            setError("Failed to save task")
-        }
-    }
-
-    // Mark completed
-    const taskComplete = async (id: string) => {
-        try {
-
-            const task = tasks.find(t => t.id === id);
-            if (!task) return;
-
-             const nextStatus = getNextStatus(task.status)
-                
-
-            await updateTaskStatus(id, nextStatus)
-        } catch (err) {
-            console.error(err)
-            setError("Failed to update Task")
-        }
-        
     }
 
     // Filter todos
@@ -107,32 +53,6 @@ const TasksPage: React.FC<TodoProps> = ({user}) => {
         return matchesProject && matchesFilter;
     })
 
-    //Todo Counter
-    const activeCount = tasks.filter(
-        (task) => task.status !== "done"
-    ).length;
-
-    //Task Complete
-    const hasCompleted = tasks.some(task => task.status === "done");
-
-    //Delete Completed
-    const clearCompleted = async () => {
-        try {
-                const completedTasks = tasks.filter(
-                    task => task.status === "done"
-                );
-                await Promise.all(
-                    completedTasks.map(task =>
-                        deleteTask(task.id)
-                    )
-                )
-            }
-          catch (err) {
-            console.error(err);
-            setError("Failed to clear completed tasks")
-        }
-    }
-
     // Add Project
     const handleAddProject = async () => {
         try {
@@ -144,34 +64,44 @@ const TasksPage: React.FC<TodoProps> = ({user}) => {
             setError("Failed to add project");
           }
         };
-
     
-    // OverDue
-
-
-    //Loading Screen
-    if (loading) {
-            return <p>Loading tasks...</p>
-        }
-    if (error) {
-        return <p>{error}</p>
-    }
-
-
-    return (
+    useEffect(() => {
+      if (!activeTeamId) return;
         
+      const loadMembers = async () => {
+        try {
+          const teamMembers = await getMembersByTeam(activeTeamId);
+          setMembers(teamMembers);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+    
+      loadMembers();
+    }, [activeTeamId]);
+
+    console.log(members);
+        //Loading Screen
+        if (loading) {
+                return <p>Loading tasks...</p>
+            }
+        if (error) {
+            return <p>{error}</p>
+        }
+
+    return (        
     <div className='app-layout'>
         
              <div className='sidebar'>
                 <h3>Projects</h3>
                 <CustomButton
-                onClick={() => setSelectedProject(null)}
-                label='All'
-                hoverColor='white'
+                    onClick={() => setSelectedProject(null)}
+                    label='All'
+                    hoverColor='white'
                 />
                 
               {projects.map(project => (
-                  <CustomButton
+                <CustomButton
                   key={project.id}
                   onClick={() => setSelectedProject(project.id)}
                   label={project.name}
@@ -186,9 +116,9 @@ const TasksPage: React.FC<TodoProps> = ({user}) => {
                 />
 
                 <CustomButton
-                hoverColor='green'
-                onClick={handleAddProject}
-                label='Add Project'
+                    hoverColor='green'
+                    onClick={handleAddProject}
+                    label='Add Project'
                 />  
             </div>
         <div className='main-content'>
@@ -200,56 +130,27 @@ const TasksPage: React.FC<TodoProps> = ({user}) => {
                     dueDate={dueDate}
                     setDueDate={setDueDate}
                     addTodo={addTodo}
-                    />
-                <div className="filters">
-                    <CustomButton 
-                    label="All" 
-                    hoverColor="white" 
-                    onClick={() => setFilter("all")}
-                    active={filter === "all"}
-                    />
+                    selectedProject={selectedProject}
+                    assignedTo={assignedTo}
+                    setAssignedTo={setAssignedTo}
+                    members={members}
+                />
+                <TasksFilter
+                    filter={filter}
+                    setFilter={setFilter}
+                />
+                <TasksStats
+                    tasks={tasks}
+                    clearCompleted={clearCompleted}
+                />
+                  {filteredTasks.length === 0 && (
+                <p className="empty-state">
+                  No tasks here yet
+                </p>
+                  )}
+                    {filteredTasks.length > 0 && (
 
-                    <CustomButton
-                    label='Todo'
-                    hoverColor='red'
-                    onClick={() => setFilter("todo")}
-                    active={filter === "todo"}
-                    />
-
-                    <CustomButton 
-                    label="In-Progress" 
-                    hoverColor="yellow" 
-                    onClick={() => setFilter("in-progress")}
-                    active={filter === "in-progress"}
-                    />
-                    <CustomButton 
-                    label="Done" 
-                    hoverColor="green" 
-                    onClick={() => setFilter("done")}
-                    active={filter === "done"}
-                    />
-                    </div>
-                    <div className='tasks__container'>
-
-                    <p>
-                        {activeCount} {activeCount === 1 ? "task" : "tasks"} remaining
-                    </p>
-                    {hasCompleted && (
-                        <CustomButton 
-                        label="Clear Completed" 
-                        hoverColor="Green" 
-                        onClick={clearCompleted}
-                        />
-                    )}    
-                </div>
-              {filteredTasks.length === 0 && (
-            <p className="empty-state">
-              No tasks here yet
-            </p>
-              )}
-                {filteredTasks.length > 0 && (
-
-                    <TodoList 
+                <TodoList 
                     filteredTasks={filteredTasks}
                     editId={editId}
                     editText={editText}
@@ -259,7 +160,7 @@ const TasksPage: React.FC<TodoProps> = ({user}) => {
                     deleteTodo={deleteTodo}
                     taskComplete={taskComplete}
                     setDeleteId={setDeleteId}
-                    />
+                />
                 )}
 
             </div>

@@ -38,7 +38,7 @@ export const SlidingToggle = ({
       {options.map((option) => (
         <button
           key={option.value}
-          className="toggle-button"
+          className={`toggle-button ${value === option.value ? "active" : ""}`}
           onClick={() => onChange(option.value)}
         >
           {option.label}

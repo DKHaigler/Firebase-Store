@@ -25,13 +25,15 @@ export const addTask = async (
     teamId:string,
     text: string,
     projectId: string | null,
-    dueDate: string ) => {
+    dueDate: string, 
+    assignedTo: string) => {
     return await addDoc(collection(db, "tasks"), {
         text,
         teamId,
         projectId: projectId,
         status: "todo",
         createdBy:uid,
+        assignedTo,
         dueDate
     });
     

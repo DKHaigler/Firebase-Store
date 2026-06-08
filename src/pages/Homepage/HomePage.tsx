@@ -4,6 +4,7 @@ import { SlidingToggle } from "../../Components/UI/ViewToggle/ViewToggle";
 import { getGreeting } from "../../Components/Utils/Greeting";
 import { TeamView } from "./TeamView";
 import { ProjectView } from "./ProjectView";
+import './HomePage.css'
 
 
 const HomePage = () => {
@@ -11,8 +12,8 @@ const HomePage = () => {
   return (
   <div className="home">
     <div className="home__header">
-      <div className="greeting">
-        <h1>{getGreeting()}</h1>
+      <div className="greeting__container">
+        <h2>{getGreeting()}</h2>
         <p>Here's what your team is working on</p>
       </div>
       <SlidingToggle

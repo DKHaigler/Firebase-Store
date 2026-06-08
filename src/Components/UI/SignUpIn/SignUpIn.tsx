@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CustomButton } from "../UI/Button/Button"
+import { CustomButton } from "../Button/Button"
 
 type SignUpInProps = {
     signIn: (email:string, password:string) => void;

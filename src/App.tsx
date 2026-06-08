@@ -1,5 +1,5 @@
 import './App.css';
-import { SignUpIn } from './Components/SignUpIn/SignUpIn';
+import { SignUpIn } from './Components/UI/SignUpIn/SignUpIn';
 import { Header } from './Components/Layout/Header/header';
 import { useAuth } from './context/AuthContext';
 
@@ -35,19 +35,21 @@ function App() {
     }
     return  (
       <BrowserRouter>
+      <div className="app-container">
 
-      <Header 
-      user={user}
-      />
+        <Header 
+        user={user}
+        />
+  
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+      
+          <Route path="/tasks" element={<TasksPage user={user}/>} />
+      
+          <Route path="/inbox" element={<InboxPage />} />
+        </Routes>
 
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-
-        <Route path="/tasks" element={<TasksPage user={user}/>} />
-
-        <Route path="/inbox" element={<InboxPage />} />
-      </Routes>
-
+      </div>
     </BrowserRouter>
     )
 }

@@ -7,7 +7,7 @@ type TodoListProps = {
   editText: string;
   setEditText: React.Dispatch<React.SetStateAction<string>>;
   startEdit: (id: string, text: string) => void;
-  saveEdit: (id: string) => void;
+  saveEdit: (id: string, text: string) => void;
   deleteTodo: (id: string) => void;
   taskComplete: (id: string) => void;
   setDeleteId: (id: string) => void;

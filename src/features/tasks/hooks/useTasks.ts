@@ -34,6 +34,7 @@ export const useTasks = () => {
               projectId: data.projectId,
               status: data.status,
               createdBy: data.createdBy,
+              assignedTo: data.assignedTo,
               dueDate: data.dueDate
             };
           });
