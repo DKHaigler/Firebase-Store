@@ -1,6 +1,6 @@
 import './App.css';
 import { SignUpIn } from './Components/UI/SignUpIn/SignUpIn';
-import { Header } from './Components/Layout/Header/header';
+import { Header } from './Components/Layout/Header/Header';
 import { useAuth } from './context/AuthContext';
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -40,12 +40,12 @@ function App() {
         <Header 
         user={user}
         />
-  
+
         <Routes>
           <Route path="/" element={<HomePage />} />
-      
+
           <Route path="/tasks" element={<TasksPage user={user}/>} />
-      
+
           <Route path="/inbox" element={<InboxPage />} />
         </Routes>
 
