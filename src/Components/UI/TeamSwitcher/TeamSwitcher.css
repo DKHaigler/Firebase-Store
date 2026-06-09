@@ -1,29 +1,100 @@
 .team-switcher {
-  display: flex;
-  width: auto;
-  border-radius: 25px;
-  margin: 20px 10px 20px 10px;
+  position: relative;
+  display: inline-block;
+}
+
+.team-switcher button {
+  background: transparent;
+  border: 1px solid #2d2d2d;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: white;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.team-switcher button:hover {
+  border-color: #555;
 }
 
 .dropdown {
   position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+
+  min-width: 250px;
+
   background: #1a1a1a;
-  border-radius: 20px;
-  padding: 8px;
-  margin-top: 40px;
-  width: 150px;
+  border: 1px solid #2d2d2d;
+  border-radius: 12px;
+
+  padding: 0.5rem;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.35);
+
+  z-index: 100;
 }
 
-
 .dropdown-item {
-  padding: 8px;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
   cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .dropdown-item:hover {
-  background: #333;
+  background-color: #2a2a2a;
 }
 
 .dropdown-item.active {
-  font-weight: bold;
+  background-color: #303030;
+  font-weight: 600;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #2d2d2d;
+  margin: 0.75rem 0;
+}
+
+.dropdown input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+
+  background: #111;
+  border: 1px solid #2d2d2d;
+  border-radius: 8px;
+
+  color: white;
+}
+
+.dropdown input:focus {
+  outline: none;
+  border-color: #555;
+}
+
+.dropdown button {
+  width: 100%;
+  border: none;
+
+  background: #2d2d2d;
+  color: white;
+
+  padding: 0.75rem;
+  border-radius: 8px;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown button:hover {
+  background: #3a3a3a;
 }

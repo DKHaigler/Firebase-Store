@@ -12,6 +12,7 @@ import { TasksFilter } from '../../features/tasks/components/TaskFilters';
 import { useTaskActions } from '../../features/tasks/hooks/useTasksActions';
 import { getMembersByTeam } from '../../services/membersService';
 import { Member } from '../../types/Members';
+import { ProjectsSidebar } from '../../Components/Layout/ProjectsSideBar/ProjectsSideBar';
 
 type TodoProps = {
     user:any;
@@ -92,35 +93,14 @@ const TasksPage: React.FC<TodoProps> = ({user}) => {
     return (        
     <div className='app-layout'>
         
-             <div className='sidebar'>
-                <h3>Projects</h3>
-                <CustomButton
-                    onClick={() => setSelectedProject(null)}
-                    label='All'
-                    hoverColor='white'
-                />
-                
-              {projects.map(project => (
-                <CustomButton
-                  key={project.id}
-                  onClick={() => setSelectedProject(project.id)}
-                  label={project.name}
-                  hoverColor='white'
-                />
-                
-                ))}
-                <input 
-                    value={newProject}
-                    onChange={(e) => setNewProject(e.target.value)}
-                    placeholder='New Project'
-                />
-
-                <CustomButton
-                    hoverColor='green'
-                    onClick={handleAddProject}
-                    label='Add Project'
-                />  
-            </div>
+        <ProjectsSidebar
+          projects={projects}
+          selectedProject={selectedProject}
+          setSelectedProject={setSelectedProject}
+          newProject={newProject}
+          setNewProject={setNewProject}
+          handleAddProject={handleAddProject}
+        />
         <div className='main-content'>
                 
             <div className='todo__container'>

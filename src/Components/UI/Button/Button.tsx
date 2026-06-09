@@ -7,6 +7,7 @@ type ButtonProps = {
   hoverColor: string;
   onClick: () => void;
   active?: boolean;
+  className?: string;
 };
 
 export const CustomButton: React.FC<ButtonProps> = ({
@@ -15,15 +16,16 @@ export const CustomButton: React.FC<ButtonProps> = ({
   onClick,
   hoverColor,
   active,
+  className,
 }) => {
   return (
     <button
-      className={`custom-button ${active ? "active" : ""}`}
+      className={`custom-button ${active ? "active" : ""} ${className ?? ""}`}
       style={{
         borderColor,
         backgroundColor: active ? hoverColor : undefined,
         color: active ? "#000" : undefined,
-        ["--hover-color" as any]: hoverColor
+        ["--hover-color" as any]: hoverColor,
       }}
       onClick={onClick}
     >

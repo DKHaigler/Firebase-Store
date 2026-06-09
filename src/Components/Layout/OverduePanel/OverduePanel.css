@@ -1,0 +1,39 @@
+.overdue__container {
+  padding: 16px;
+  background: #111;
+  border-radius: 12px;
+  color: white;
+}
+
+.overdue__title {
+  margin-bottom: 12px;
+}
+
+.overdue__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.overdue__card {
+  padding: 10px;
+  border-radius: 10px;
+  background: #1c1c1c;
+  border-left: 4px solid red;
+}
+
+.overdue__task {
+  font-weight: bold;
+}
+
+.overdue__meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 6px;
+}
+
+.overdue__empty {
+  opacity: 0.7;
+}
