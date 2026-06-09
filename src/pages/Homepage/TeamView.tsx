@@ -4,7 +4,7 @@ import { getMembersByTeam } from "../../services/membersService";
 import { useTeam } from "../../context/TeamContext";
 import { isTaskOverdue } from "../../Components/Utils/TaskRules";
 import { useTasks } from "../../features/tasks/hooks/useTasks";
-import { OverdueTasksPanel } from "../../Components/Layout/OverduePanel/OverDuePanel";
+import { OverdueTasksPanel } from "../../Components/Layout/OverduePanel/OverduePanel";
 import { MembersPanel } from "../../Components/Layout/MembersPanel/MembersPanel";
 
 export const TeamView = () => {
