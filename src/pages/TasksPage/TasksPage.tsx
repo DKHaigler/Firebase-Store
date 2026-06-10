@@ -11,14 +11,12 @@ import { useTeam } from "../../context/TeamContext";
 import { TasksStats } from "../../features/tasks/components/TaskStats";
 import { TasksFilter } from "../../features/tasks/components/TaskFilters";
 import { useTaskActions } from "../../features/tasks/hooks/useTasksActions";
-import { useMemberLookup } from "../../features/members/hooks/useMemberLookup";
+import { useEnrichedTasks } from "../../features/tasks/hooks/useEnrichedTasks";
+import { useTeamMembers } from "../../features/members/hooks/useTeamMembers";
 
-import { getMembersByTeam } from "../../services/membersService";
 import { addProject } from "../../services/projectService";
 
 import { ProjectsSidebar } from "../../Components/Layout/ProjectsSideBar/ProjectsSideBar";
-
-import { Member } from "../../types/Members";
 
 type TodoProps = {
   user: any;
@@ -29,10 +27,8 @@ const TasksPage: React.FC<TodoProps> = ({ user }) => {
   const { projects } = useProjects();
   const { activeTeamId } = useTeam();
 
-  const [members, setMembers] = useState<Member[]>([]);
   const [assignedTo, setAssignedTo] = useState("");
-  const { getMemberName } = useMemberLookup(members)
-
+  
   const [newTodo, setNewTodo] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
@@ -48,38 +44,22 @@ const TasksPage: React.FC<TodoProps> = ({ user }) => {
   const [selectedProject, setSelectedProject] =
     useState<string | null>(null);
 
-  const {
-    addTodo,
-    deleteTodo,
-    saveEdit,
-    taskComplete,
-    clearCompleted,
-  } = useTaskActions({
+  const { addTodo, deleteTodo, saveEdit, taskComplete, clearCompleted,} = useTaskActions({
     user,
     activeTeamId,
     tasks,
   });
 
-  useEffect(() => {
-    if (!activeTeamId) return;
+  const members = useTeamMembers(activeTeamId);
 
-    const loadMembers = async () => {
-      const data = await getMembersByTeam(activeTeamId);
-      setMembers(data);
-      console.log("members:", data);
-    };
-
-    loadMembers();
-  }, [activeTeamId]);
-
-  
+  const enrichedTasks = useEnrichedTasks(tasks, members);
 
   const startEdit = (id: string, text: string) => {
     setEditId(id);
     setEditText(text);
   };
 
-  const filteredTasks = tasks.filter((task) => {
+  const filteredTasks = enrichedTasks.filter((task) => {
     const matchesProject =
       selectedProject === null ||
       task.projectId === selectedProject;
@@ -136,7 +116,6 @@ const TasksPage: React.FC<TodoProps> = ({ user }) => {
             selectedProject={selectedProject}
             assignedTo={assignedTo}
             setAssignedTo={setAssignedTo}
-            members={members}
           />
 
           <TasksFilter
@@ -166,7 +145,6 @@ const TasksPage: React.FC<TodoProps> = ({ user }) => {
               deleteTodo={deleteTodo}
               taskComplete={taskComplete}
               setDeleteId={setDeleteId}
-              getMemberName={getMemberName}
             />
           )}
 

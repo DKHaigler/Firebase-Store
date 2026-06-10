@@ -1,9 +1,10 @@
 import { CustomButton } from "../../../../../Components/UI/Button/Button"
 import { Task } from "../../../types/Task"; 
 import { isTaskOverdue } from "../../../../../Components/Utils/TaskRules";
+import { EnrichedTask } from "../../../hooks/useEnrichedTasks";
 
 type TodoItemProps = {
-  task: Task;
+  task: EnrichedTask;
   editId: string | null;
   editText: string;
   setEditText: React.Dispatch<React.SetStateAction<string>>;
@@ -12,11 +13,10 @@ type TodoItemProps = {
   startEdit: (id: string, text: string) => void;
   deleteTodo: (id: string) => void;
   setDeleteId: (id:string) => void;
-  getMemberName: (userID:string) => string;
 };
 
 
-export const TodoItem = ({ task, editId, editText, setEditText, saveEdit, taskComplete, startEdit, setDeleteId, getMemberName }: TodoItemProps) => {
+export const TodoItem = ({ task, editId, editText, setEditText, saveEdit, taskComplete, startEdit, setDeleteId}: TodoItemProps) => {
     const overdue = isTaskOverdue(task);
 
     return(
@@ -47,7 +47,7 @@ export const TodoItem = ({ task, editId, editText, setEditText, saveEdit, taskCo
                     {task.text}
                     {overdue && <span>🔴 Overdue</span>}
                     <p className="todo-assigned">
-                      Assigned to:{getMemberName(task.assignedTo)}
+                      Assigned to:{task.assignedToName}
                     </p>
                     </div>
                     <div className='button__container'>

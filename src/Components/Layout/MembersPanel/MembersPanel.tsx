@@ -1,4 +1,4 @@
-import { Member } from "../../../types/Members";
+import { Member } from "../../../features/members/type/Members";
 import './MembersPanel.css'
 
 type MembersPanelProps = {

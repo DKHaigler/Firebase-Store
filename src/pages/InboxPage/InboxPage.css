@@ -1,0 +1,30 @@
+.inbox {
+  padding: 20px;
+}
+
+.invite-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.invite-card {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.invite-card button {
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: #7c5cff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.invite-card button:hover {
+  background: #6747ff;
+}

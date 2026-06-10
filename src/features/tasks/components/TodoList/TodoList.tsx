@@ -1,8 +1,9 @@
 import { TodoItem } from "./TodoItem/TodoItem";
 import { Task } from "../../types/Task";
+import { EnrichedTask } from "../../hooks/useEnrichedTasks";
 
 type TodoListProps = {
-  filteredTasks: Task[];
+  filteredTasks: EnrichedTask[];
   editId: string | null;
   editText: string;
   setEditText: React.Dispatch<React.SetStateAction<string>>;
@@ -11,7 +12,6 @@ type TodoListProps = {
   deleteTodo: (id: string) => void;
   taskComplete: (id: string) => void;
   setDeleteId: (id: string) => void;
-  getMemberName: (userID:string) => string;
 };
 
 export const TodoList:React.FC<TodoListProps> = ({
@@ -24,7 +24,6 @@ export const TodoList:React.FC<TodoListProps> = ({
     deleteTodo,
     taskComplete,
     setDeleteId,
-    getMemberName
 }) => {
     return (
         <ul>
@@ -40,7 +39,6 @@ export const TodoList:React.FC<TodoListProps> = ({
                     deleteTodo={deleteTodo}
                     taskComplete={taskComplete}
                     setDeleteId={setDeleteId}
-                    getMemberName={getMemberName} 
                 />
             ))}
         </ul>

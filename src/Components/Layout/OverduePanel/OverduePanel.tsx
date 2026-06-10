@@ -1,14 +1,12 @@
-import { Task } from "../../../features/tasks/types/Task";
+import { EnrichedTask } from "../../../features/tasks/hooks/useEnrichedTasks";
 import './OverduePanel.css'
 
 type OverdueTasksPanelProps = {
-  tasks: Task[];
-  getMemberName: (userID:string) => string;
+  tasks: EnrichedTask[];
 };
 
 export const OverdueTasksPanel = ({
   tasks,
-  getMemberName
 }: OverdueTasksPanelProps) => {
   const today = new Date();
 
@@ -41,7 +39,7 @@ export const OverdueTasksPanel = ({
 
               <div className="overdue__meta">
                 <span>
-                  Assigned: {getMemberName(task.assignedTo)}
+                  Assigned: {(task.assignedToName)}
                 </span>
 
                 <span>

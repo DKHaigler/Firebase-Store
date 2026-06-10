@@ -1,42 +1,33 @@
-import { useState, useEffect } from "react"
-import { Member } from "../../types/Members";
-import { getMembersByTeam } from "../../services/membersService";
+import { useState } from "react"
+
 import { useTeam } from "../../context/TeamContext";
-import { isTaskOverdue } from "../../Components/Utils/TaskRules";
+import { useAuth } from "../../context/AuthContext";
+
 import { useTasks } from "../../features/tasks/hooks/useTasks";
+import { useEnrichedTasks } from "../../features/tasks/hooks/useEnrichedTasks";
+import { useTeamMembers } from "../../features/members/hooks/useTeamMembers";
+
 import { OverdueTasksPanel } from "../../Components/Layout/OverduePanel/OverduePanel";
 import { MembersPanel } from "../../Components/Layout/MembersPanel/MembersPanel";
-import { useMemberLookup } from "../../features/members/hooks/useMemberLookup";
+import { InviteMember } from "../../Components/Layout/InviteMember/InviteMember";
 
 export const TeamView = () => {
-    const { tasks } = useTasks()
-    const [ members, setMembers] = useState<Member[]>([]);
-    const { getMemberName } = useMemberLookup(members)
-    const [ loadingMembers, setLoadingMembers] = useState(false);
-    const { activeTeamId } = useTeam()
-    const [empty, setEmpty] = useState()
-    
+    const { tasks } = useTasks();
+    const { activeTeamId } = useTeam();
+    const { user } = useAuth();
 
-    useEffect(() => {
-    if (!activeTeamId) return;
-
-        const fetchMembers = async () => {
-        setLoadingMembers(true);
-
-        const data = await getMembersByTeam(activeTeamId);
-
-        setMembers(data);
-
-        setLoadingMembers(false);
-        };
-
-        fetchMembers();
-    }, [activeTeamId]);
+    const members = useTeamMembers(activeTeamId);
+    const enrichedTasks = useEnrichedTasks(tasks, members);
 
     return (
         <div className="team-view">
-            <MembersPanel members={members} loadingMembers={loadingMembers} />
-            <OverdueTasksPanel tasks={tasks} getMemberName={getMemberName}/>
+
+            <div className="team-actions">
+                <InviteMember userId={user!.uid} />
+            </div>
+            
+            <MembersPanel members={members} loadingMembers={false} />
+            <OverdueTasksPanel tasks={enrichedTasks} />
         </div>
-    )
-}
+    );
+};

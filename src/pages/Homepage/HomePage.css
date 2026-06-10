@@ -8,10 +8,6 @@ padding: 100px;
 
 }
 
-.team-view {
-    display: flex;
-    flex-direction: row;
-}
 
 .greeting__container {
     display: flex;
@@ -21,3 +17,12 @@ padding: 100px;
     margin: 50px;
 }
 
+
+.team-view {
+    display: flex;
+    flex-direction: row;
+}
+
+.team-actions {
+  margin-bottom: 16px;
+}
