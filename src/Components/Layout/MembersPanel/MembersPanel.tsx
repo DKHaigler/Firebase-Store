@@ -19,7 +19,7 @@ export const MembersPanel = ({
 
         {members.map((member) => (
           <div className="members-card" key={member.userId}>
-            <p>{member.userId}</p>
+            <p>{member.name}</p>
             <p>{member.role}</p>
           </div>
         ))}

@@ -3,10 +3,12 @@ import './OverduePanel.css'
 
 type OverdueTasksPanelProps = {
   tasks: Task[];
+  getMemberName: (userID:string) => string;
 };
 
 export const OverdueTasksPanel = ({
   tasks,
+  getMemberName
 }: OverdueTasksPanelProps) => {
   const today = new Date();
 
@@ -39,7 +41,7 @@ export const OverdueTasksPanel = ({
 
               <div className="overdue__meta">
                 <span>
-                  Assigned: {task.assignedTo}
+                  Assigned: {getMemberName(task.assignedTo)}
                 </span>
 
                 <span>

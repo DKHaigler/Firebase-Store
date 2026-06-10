@@ -19,16 +19,27 @@ export const subscribeToTeams = (
 export const createTeam = async (
   name: string,
   ownerId: string
+
 ) => {
   const teamRef = await addDoc(collection(db, "teams"), {
     name,
     ownerId,
   });
+
+  const userSnap = await getDoc(doc(db, "users",ownerId));
+  
+
+    if (!userSnap.exists()) {
+    throw new Error("User profile missing name. Cannot create team member.");
+  }
+
+  const userData = userSnap.data() as { name: string};
   
   await createMember(
     ownerId,
     teamRef.id,
-    "owner"
+    "owner",
+    userData.name
   )
   return teamRef
 };
@@ -42,7 +53,7 @@ export const ensureUserHasPersonalTeam = async (user: User) => {
   const existing = await getDoc(teamRef);
 
   if (!existing.exists()) {
-    await setDoc(teamRef, {
+    await setDoc(teamRef, {                                 
       name: "Personal",
       ownerId: user.uid,
     });

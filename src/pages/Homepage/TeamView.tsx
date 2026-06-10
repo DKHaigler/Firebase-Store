@@ -6,10 +6,12 @@ import { isTaskOverdue } from "../../Components/Utils/TaskRules";
 import { useTasks } from "../../features/tasks/hooks/useTasks";
 import { OverdueTasksPanel } from "../../Components/Layout/OverduePanel/OverduePanel";
 import { MembersPanel } from "../../Components/Layout/MembersPanel/MembersPanel";
+import { useMemberLookup } from "../../features/members/hooks/useMemberLookup";
 
 export const TeamView = () => {
     const { tasks } = useTasks()
     const [ members, setMembers] = useState<Member[]>([]);
+    const { getMemberName } = useMemberLookup(members)
     const [ loadingMembers, setLoadingMembers] = useState(false);
     const { activeTeamId } = useTeam()
     const [empty, setEmpty] = useState()
@@ -34,7 +36,7 @@ export const TeamView = () => {
     return (
         <div className="team-view">
             <MembersPanel members={members} loadingMembers={loadingMembers} />
-            <OverdueTasksPanel tasks={tasks} />
+            <OverdueTasksPanel tasks={tasks} getMemberName={getMemberName}/>
         </div>
     )
 }

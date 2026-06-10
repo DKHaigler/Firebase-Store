@@ -12,11 +12,13 @@ type TodoItemProps = {
   startEdit: (id: string, text: string) => void;
   deleteTodo: (id: string) => void;
   setDeleteId: (id:string) => void;
+  getMemberName: (userID:string) => string;
 };
 
 
-export const TodoItem = ({ task, editId, editText, setEditText, saveEdit, taskComplete, startEdit, setDeleteId, }: TodoItemProps) => {
+export const TodoItem = ({ task, editId, editText, setEditText, saveEdit, taskComplete, startEdit, setDeleteId, getMemberName }: TodoItemProps) => {
     const overdue = isTaskOverdue(task);
+
     return(
         <li className='todo-outer__container'>
             {
@@ -44,6 +46,9 @@ export const TodoItem = ({ task, editId, editText, setEditText, saveEdit, taskCo
                         }>
                     {task.text}
                     {overdue && <span>🔴 Overdue</span>}
+                    <p className="todo-assigned">
+                      Assigned to:{getMemberName(task.assignedTo)}
+                    </p>
                     </div>
                     <div className='button__container'>
                         <CustomButton label="Edit" 

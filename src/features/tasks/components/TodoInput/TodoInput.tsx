@@ -53,7 +53,7 @@ export const TodoInput = ({ newTodo, setNewTodo, dueDate, setDueDate, addTodo, s
             <option value="">Assign to</option>
                 {members.map((m) => (
                   <option key={m.userId} value={m.userId}>
-                    {m.userId}
+                    {m.name}
                   </option>
                 ))}
             </select>

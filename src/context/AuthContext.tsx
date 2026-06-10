@@ -4,10 +4,14 @@ import { User, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEma
 
 import { auth } from "../lib/firebase";
 
+import { doc, setDoc } from "firebase/firestore";
+
+import { db } from "../lib/firebase";
+
 type AuthContextType = {
   user: User | null;
   loading: boolean;
-  signUp: (email: string, password: string) => Promise<UserCredential | void>;
+  signUp: (email: string, password: string, name: string) => Promise<UserCredential | void>;
   signIn: (email: string, password: string) => Promise<UserCredential | void>;
   logOut: () => Promise<void>;
 };
@@ -27,8 +31,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return unsubscribe;
   }, []);
 
-  const signUp = async (email: string, password: string) => {
-    return await createUserWithEmailAndPassword(auth, email, password);
+  const signUp = async (email: string, password: string, name: string) => {
+    const UserCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+    const user = UserCredential.user;
+
+    await setDoc(doc(db,"users", user.uid), {
+      userId: user.uid,
+      email: email,
+      name: name,
+      createdAt: new Date(),
+    })
+
+    return UserCredential
   };
 
   const signIn = async (email: string, password: string) => {

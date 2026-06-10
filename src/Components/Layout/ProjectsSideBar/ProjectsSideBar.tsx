@@ -1,6 +1,6 @@
 import { CustomButton } from "../../UI/Button/Button";
 import { Project } from "../../../types/Project";
-import './ProjectsSideBar.css'
+import "./ProjectsSideBar.css";
 
 type ProjectsSidebarProps = {
   projects: Project[];
@@ -21,26 +21,27 @@ export const ProjectsSidebar = ({
 }: ProjectsSidebarProps) => {
   return (
     <div className="sidebar">
+
       <h3>Projects</h3>
 
       <CustomButton
-          label="All"
-          hoverColor="white"
-          active={selectedProject === null}
-          className="project-item"
-          onClick={() => setSelectedProject(null)}
-        />
-        
+        label="All"
+        hoverColor="white"
+        active={selectedProject === null}
+        onClick={() => setSelectedProject(null)}
+      />
+
+      <div className="project-list">
         {projects.map((project) => (
           <CustomButton
             key={project.id}
             label={project.name}
             hoverColor="white"
             active={selectedProject === project.id}
-            className="project-item"
             onClick={() => setSelectedProject(project.id)}
           />
         ))}
+      </div>
 
       <input
         value={newProject}
@@ -53,6 +54,7 @@ export const ProjectsSidebar = ({
         onClick={handleAddProject}
         label="Add Project"
       />
+
     </div>
   );
 };

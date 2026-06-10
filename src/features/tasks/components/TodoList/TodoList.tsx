@@ -11,6 +11,7 @@ type TodoListProps = {
   deleteTodo: (id: string) => void;
   taskComplete: (id: string) => void;
   setDeleteId: (id: string) => void;
+  getMemberName: (userID:string) => string;
 };
 
 export const TodoList:React.FC<TodoListProps> = ({
@@ -22,7 +23,8 @@ export const TodoList:React.FC<TodoListProps> = ({
     saveEdit,
     deleteTodo,
     taskComplete,
-    setDeleteId
+    setDeleteId,
+    getMemberName
 }) => {
     return (
         <ul>
@@ -38,6 +40,7 @@ export const TodoList:React.FC<TodoListProps> = ({
                     deleteTodo={deleteTodo}
                     taskComplete={taskComplete}
                     setDeleteId={setDeleteId}
+                    getMemberName={getMemberName} 
                 />
             ))}
         </ul>

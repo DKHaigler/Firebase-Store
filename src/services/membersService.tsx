@@ -6,12 +6,14 @@ import { Member } from "../types/Members";
 export const createMember = async (
   userId: string,
   teamId: string,
-  role: "owner" | "member"
+  role: "owner" | "member",
+  name: string
 ) => {
   return await addDoc(collection(db, "members"), {
     userId,
     teamId,
     role,
+    name
   });
 };
 
