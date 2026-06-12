@@ -1,14 +1,16 @@
-import { User } from "firebase/auth";
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import { SlidingToggle } from "../../Components/UI/ViewToggle/ViewToggle";
 import { getGreeting } from "../../Components/Utils/Greeting";
 import { TeamView } from "./TeamView";
 import { ProjectView } from "./ProjectView";
+import { InviteMember } from "../../Components/Layout/InviteMember/InviteMember";
 import './HomePage.css'
 
 
 const HomePage = () => {
   const [view, setView] = useState("team");
+  const { user } = useAuth();
   return (
   <div className="home">
     <div className="home__header">
@@ -25,6 +27,9 @@ const HomePage = () => {
         ]}
       />
     </div>
+     <div className="team-actions">
+                <InviteMember userId={user!.uid} />
+            </div>
     {view === 'team' ? (
       <TeamView/>
     ) : (

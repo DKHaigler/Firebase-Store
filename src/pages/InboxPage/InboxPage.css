@@ -28,3 +28,16 @@
 .invite-card button:hover {
   background: #6747ff;
 }
+@media (max-width: 768px) {
+  .inbox {
+    padding: 80px 16px 20px;
+  }
+
+  .invite-card {
+    padding: 10px;
+  }
+
+  .invite-card button {
+    width: 100%;
+  }
+}

@@ -11,6 +11,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --header-height: 50px;
 }
 
 a {
@@ -32,6 +33,11 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
 }
 
 

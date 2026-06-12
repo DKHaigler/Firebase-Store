@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
+import { useLocation } from "react-router-dom";
 import "./TasksPage.css";
 
 import { TodoInput } from "../../features/tasks/components/TodoInput/TodoInput";
@@ -35,14 +36,26 @@ const TasksPage: React.FC<TodoProps> = ({ user }) => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [filter, setFilter] = useState<
     "all" | "todo" | "in-progress" | "done"
   >("all");
+  
+  const location = useLocation();
+
+  const projectIdFromNavigation =
+  location.state?.projectId ?? null;
 
   const [newProject, setNewProject] = useState("");
   const [selectedProject, setSelectedProject] =
     useState<string | null>(null);
+
+  useEffect(() => {
+  if (projectIdFromNavigation) {
+    setSelectedProject(projectIdFromNavigation);
+  }
+  }, [projectIdFromNavigation]);
 
   const { addTodo, deleteTodo, saveEdit, taskComplete, clearCompleted,} = useTaskActions({
     user,
@@ -58,6 +71,7 @@ const TasksPage: React.FC<TodoProps> = ({ user }) => {
     setEditId(id);
     setEditText(text);
   };
+
 
   const filteredTasks = enrichedTasks.filter((task) => {
     const matchesProject =
@@ -93,20 +107,30 @@ const TasksPage: React.FC<TodoProps> = ({ user }) => {
   if (error) return <p>{error}</p>;
 
   return (
+    
     <div className="app-layout">
-
+            {sidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
       <ProjectsSidebar
+        className={sidebarOpen ? "sidebar open" : "sidebar"}
         projects={projects}
         selectedProject={selectedProject}
         setSelectedProject={setSelectedProject}
         newProject={newProject}
         setNewProject={setNewProject}
         handleAddProject={handleAddProject}
+        setSidebarOpen={setSidebarOpen}
       />
 
       <div className="main-content">
         <div className="todo__container">
-
+          <button className="sidebar-toggle" onClick={() => setSidebarOpen(true)}>
+            ☰ Projects
+          </button>
           <TodoInput
             newTodo={newTodo}
             setNewTodo={setNewTodo}

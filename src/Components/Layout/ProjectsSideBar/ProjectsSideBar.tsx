@@ -9,6 +9,8 @@ type ProjectsSidebarProps = {
   newProject: string;
   setNewProject: React.Dispatch<React.SetStateAction<string>>;
   handleAddProject: () => Promise<void>;
+  className?: string;
+  setSidebarOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const ProjectsSidebar = ({
@@ -18,9 +20,14 @@ export const ProjectsSidebar = ({
   newProject,
   setNewProject,
   handleAddProject,
+  className,
+  setSidebarOpen
 }: ProjectsSidebarProps) => {
   return (
-    <div className="sidebar">
+    <div className={className ? className : "sidebar"}>
+      <button className="sidebar-close" onClick={() => setSidebarOpen?.(false)}>
+        ✕
+      </button>
 
       <h3>Projects</h3>
 

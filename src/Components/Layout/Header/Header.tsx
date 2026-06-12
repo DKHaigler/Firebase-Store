@@ -1,4 +1,5 @@
 import { User } from "firebase/auth";
+import { useState } from "react";
 import { CustomButton } from "../../UI/Button/Button";
 import { useAuth } from "../../../context/AuthContext";
 import { TeamSwitcher } from "../../UI/TeamSwitcher/TeamSwitcher";
@@ -10,14 +11,17 @@ type HeaderProps = {
     user:User | null
 }
 export const Header =({user}: HeaderProps) => {
+      const [menuOpen, setMenuOpen] = useState(false);
        const {logOut} = useAuth()
 
 
     return(
         <header className="header">
             <TeamSwitcher user={user}/>
-
-        <nav className="nav-links">
+        <button className="hamburger" onClick={() => setMenuOpen(prev => !prev)}>
+          ☰
+        </button>
+        <nav className={`nav-links ${menuOpen ? "open" : ""}`}>
           <NavLink to="/" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
             Home
           </NavLink>
@@ -29,9 +33,11 @@ export const Header =({user}: HeaderProps) => {
           <NavLink to="/inbox" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
             Inbox
           </NavLink>
-        </nav>
+          <div className="account-menu">
             <p>Logged in as: {user?.email} </p>
             <CustomButton label="Sign Out" hoverColor="red" onClick={logOut}/>
+          </div>
+        </nav>
         </header>
     );
 }

@@ -5,19 +5,33 @@ import { getMembersByTeam } from "../../../services/membersService";
 export const useTeamMembers = (teamId: string | null) => {
   const [members, setMembers] = useState<Member[]>([]);
 
-  useEffect(() => {
+  const fetchMembers = async () => {
     if (!teamId) return;
 
-    const loadMembers = async () => {
-      try {
-        const data = await getMembersByTeam(teamId);
-        setMembers(data);
-      } catch (err) {
-        console.error("Failed to load members:", err);
-      }
+    try {
+      const data = await getMembersByTeam(teamId);
+      setMembers(data);
+    } catch (err) {
+      console.error("Failed to load members:", err);
+    }
+  };
+
+  // initial load + when team changes
+  useEffect(() => {
+    fetchMembers();
+  }, [teamId]);
+
+  // listen for global updates
+  useEffect(() => {
+    const handleUpdate = () => {
+      fetchMembers();
     };
 
-    loadMembers();
+    window.addEventListener("team-updated", handleUpdate);
+
+    return () => {
+      window.removeEventListener("team-updated", handleUpdate);
+    };
   }, [teamId]);
 
   return members;
