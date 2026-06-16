@@ -23,7 +23,9 @@ function App() {
     <>
     <div>
           <>
-          <p>Task Manager</p>
+          <div className="title">
+            <h1>Team Task Manager</h1>
+          </div>
           <SignUpIn
           signIn={signIn}
           signUp={signUp}
