@@ -12,8 +12,32 @@ export const subscribeToTeams = (
     collection(db, "teams"),
     where("ownerId", "==", userId)
   );
+    return onSnapshot(q, async (snapshot) => {
+      try {
+        const memberships = snapshot.docs.map((d) => d.data() as any);
 
-  return onSnapshot(q, callback, onError);
+        const teamDocs = await Promise.all(
+          memberships.map((m) =>
+            getDoc(doc(db, "teams", m.teamId))
+          )
+        );
+      
+        const fakeSnapshot = {
+          docs: teamDocs
+            .filter((t) => t.exists())
+            .map((t) => ({
+              id: t.id,
+              data: () => t.data(),
+            })),
+        } as unknown as QuerySnapshot<DocumentData>;
+
+        callback(fakeSnapshot);
+      } catch (err) {
+        onError(err);
+      }
+    },
+    onError
+  );
 };
 
 export const createTeam = async (

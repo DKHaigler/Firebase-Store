@@ -11,7 +11,7 @@ const InboxPage = () => {
 
   if (!user?.email) return <p>Loading...</p>;
 
-  const { invites , loading } = useInvites(user.email);
+  const { invites , loading } = useInvites(user?.uid ?? null);
 
 
   const handleAccept = async (inviteId: string) => {
