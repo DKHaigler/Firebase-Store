@@ -9,36 +9,38 @@ export const subscribeToTeams = (
   onError: (err: unknown) => void
 ) => {
   const q = query(
-    collection(db, "teams"),
-    where("ownerId", "==", userId)
+    collection(db, "members"),
+    where("userId", "==", userId)
   );
-    return onSnapshot(q, async (snapshot) => {
-      try {
-        const memberships = snapshot.docs.map((d) => d.data() as any);
 
-        const teamDocs = await Promise.all(
-          memberships.map((m) =>
-            getDoc(doc(db, "teams", m.teamId))
-          )
-        );
-      
-        const fakeSnapshot = {
-          docs: teamDocs
-            .filter((t) => t.exists())
-            .map((t) => ({
-              id: t.id,
-              data: () => t.data(),
-            })),
-        } as unknown as QuerySnapshot<DocumentData>;
+  return onSnapshot(q, async (snapshot) => {
+    try {
+      const teamIds = snapshot.docs.map((d) => d.data().teamId);
 
-        callback(fakeSnapshot);
-      } catch (err) {
-        onError(err);
+      if (teamIds.length === 0) {
+        callback({ docs: [] } as any);
+        return;
       }
-    },
-    onError
-  );
-};
+
+      const teamDocs = await Promise.all(
+        teamIds.map((id) => getDoc(doc(db, "teams", id)))
+      );
+
+      const fakeSnapshot = {
+        docs: teamDocs
+          .filter((t) => t.exists())
+          .map((t) => ({
+            id: t.id,
+            data: () => t.data(),
+          })),
+      } as unknown as QuerySnapshot<DocumentData>;
+
+      callback(fakeSnapshot);
+    } catch (err) {
+      onError(err);
+    }
+  }, onError);
+}
 
 export const createTeam = async (
   name: string,
