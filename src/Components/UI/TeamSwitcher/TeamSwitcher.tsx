@@ -1,6 +1,5 @@
-// TeamSwitcher.tsx
 import { useTeam } from "../../../context/TeamContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTeams } from "../../../hooks/useTeams";
 import { User } from "firebase/auth";
 import { createTeam } from "../../../services/teamServices";
@@ -14,19 +13,24 @@ export const TeamSwitcher = ({ user }: TeamSwitcherProps) => {
     const [open, setOpen] = useState(false);
     const { teams } = useTeams(user?.uid ?? null);
     const [ newTeamName, setNewTeamName ] = useState("")
-  const activeTeam = teams.find(t => t.id === activeTeamId);
+  
+    const activeTeam = teams.find(t => t.id === activeTeamId) ?? teams[0] ?? null;
 
   const handleCreateTeam = async () => {
   if (!user?.uid || !newTeamName.trim()) return;
 
   try {
     const newTeamRef = await createTeam(newTeamName, user.uid);
+
+    if (!newTeamRef?.id) return;
+
     setNewTeamName("");
     setActiveTeamId(newTeamRef.id);
     setOpen(false);
   } catch (err) {
     console.error(err);
   }
+  
 };
 
   return (
@@ -41,6 +45,7 @@ export const TeamSwitcher = ({ user }: TeamSwitcherProps) => {
             <div
               key={team.id}
               onClick={() => {
+                if (!team?.id) return;
                 setActiveTeamId(team.id);
                 setOpen(false);
               }}

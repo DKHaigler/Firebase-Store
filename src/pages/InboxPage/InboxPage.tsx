@@ -11,19 +11,11 @@ const InboxPage = () => {
 
   if (!user?.email) return <p>Loading...</p>;
 
+  const { invites , loading } = useInvites(user.email);
 
-  const { invites: initialInvites, loading } = useInvites(user.email);
-  const [ invites, setInvites ] = useState(initialInvites);
-
-  useEffect(() => {
-  setInvites(initialInvites);
-}, [initialInvites]);
 
   const handleAccept = async (inviteId: string) => {
     if (!user?.uid) return;
-
-    // 🔥 optimistic update (instant UI)
-    setInvites((prev) => prev.filter((i) => i.id !== inviteId));
 
     try {
       await acceptInvite(inviteId, user.uid);
@@ -31,15 +23,13 @@ const InboxPage = () => {
     } catch (err) {
       console.error(err);
 
-      // 🔄 rollback if something fails
-      setInvites(initialInvites);
     }
   };
 
-  if (loading) return <p>Loading invites...</p>;
+  if (loading) return <p className="inbox-message">Loading invites...</p>;
 
   if (!invites?.length) {
-    return <p>No pending invites 🎉</p>;
+    return <p className="inbox-message">No pending invites 🎉</p>;
   }
 
   return (
@@ -47,18 +37,18 @@ const InboxPage = () => {
       <h2>Inbox</h2>
 
       <div className="invite-list">
-        {invites.map((invite) => (
-          <div key={invite.id} className="invite-card">
+        {invites.map(({id, teamId, role}) => (
+          <div key={id} className="invite-card">
             <p>
-              <strong>Team:</strong> {invite.teamId}
+              <strong>Team:</strong> {teamId}
             </p>
 
             <p>
-              <strong>Role:</strong> {invite.role}
+              <strong>Role:</strong> {role}
             </p>
 
             <button
-              onClick={() => invite.id ? handleAccept(invite.id) : null}>
+              onClick={() => id ? handleAccept(id) : null}>
               Accept Invite
             </button>
           </div>

@@ -40,7 +40,6 @@ export const createInvite = async (
     throw new Error("Invite already sent to this user");
   }
 
-  // ✅ Create invite
   const inviteRef = await addDoc(collection(db, "invites"), {
     teamId,
     email,

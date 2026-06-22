@@ -1,5 +1,10 @@
 .inbox {
   padding: 20px;
+  margin-top: 80px;
+}
+
+.inbox-message {
+  margin-top: 80px;
 }
 
 .invite-list {
