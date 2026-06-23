@@ -1,5 +1,5 @@
 import {collection, addDoc, query, where, onSnapshot, QuerySnapshot, DocumentData} from "firebase/firestore";
-import { db } from "../lib/firebase";
+import { db } from "../../../lib/firebase";
 
 
 export const subscribeToProjects = (teamId: string,

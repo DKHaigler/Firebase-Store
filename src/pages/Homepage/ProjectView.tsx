@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useProjects } from "../../hooks/useProjects";
+import { useProjects } from "../../features/projects/hook/useProjects";
 
 export const ProjectView = () => {
     const { projects } = useProjects();

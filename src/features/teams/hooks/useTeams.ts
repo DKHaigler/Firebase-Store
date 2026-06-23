@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Team } from "../types/Team";
+import { Team } from "../type/Team";
 
-import { subscribeToTeams } from "../services/teamServices";
+import { subscribeToTeams } from "../service/teamServices";
 
 
 export const useTeams = (userId: string | null) => {

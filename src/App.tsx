@@ -1,7 +1,7 @@
 import './App.css';
 import { SignUpIn } from './Components/UI/SignUpIn/SignUpIn';
 import { Header } from './Components/Layout/Header/Header';
-import { useAuth } from './context/AuthContext';
+import { useAuth } from './features/auth/context/AuthContext';
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 

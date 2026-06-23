@@ -1,8 +1,8 @@
-import { useTeam } from "../../../context/TeamContext";
-import { useState, useEffect } from "react";
-import { useTeams } from "../../../hooks/useTeams";
+import { useTeam } from "../../../features/teams/context/TeamContext";
+import { useState} from "react";
+import { useTeams } from "../../../features/teams/hooks/useTeams";
 import { User } from "firebase/auth";
-import { createTeam } from "../../../services/teamServices";
+import { createTeam } from "../../../features/teams/service/teamServices";
 import "./TeamSwitcher.css"
 type TeamSwitcherProps = {
     user: User | null;

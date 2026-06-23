@@ -1,8 +1,8 @@
 import {collection, addDoc, deleteDoc, doc, updateDoc, query, where, onSnapshot, QuerySnapshot, DocumentData} from "firebase/firestore";
 
-import { db } from "../lib/firebase";
+import { db } from "../../../lib/firebase";
 
-import { TaskStatus } from "../features/tasks/types/Task";
+import { TaskStatus } from "../types/Task";
 
 
 

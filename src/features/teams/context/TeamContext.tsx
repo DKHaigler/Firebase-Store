@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../../auth/context/AuthContext";
 import { useEffect } from "react";
 
 type TeamContextType = {

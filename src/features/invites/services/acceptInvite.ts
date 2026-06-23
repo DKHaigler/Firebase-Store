@@ -1,7 +1,7 @@
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
 import { serverTimestamp } from "firebase/firestore";
-import { createMember } from "../../../services/membersService";
+import { createMember } from "../../members/service/membersService"; 
 import { Invite } from "../types/Invite";
 
 export const acceptInvite = async (

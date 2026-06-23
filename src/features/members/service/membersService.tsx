@@ -1,7 +1,7 @@
 import {  addDoc,  collection,  getDocs,  query,  where,} from "firebase/firestore";
 
-import { db } from "../lib/firebase";
-import { Member } from "../features/members/type/Members";
+import { db } from "../../../lib/firebase";
+import { Member } from "../type/Members" 
 
 export const createMember = async (
   userId: string,

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createInvite } from "../../../features/invites/services/createInvite"; 
-import { useTeam } from "../../../context/TeamContext"; 
+import { useTeam } from "../../../features//teams/context/TeamContext"; 
 import './InviteMember.css'
 
 type Props = {

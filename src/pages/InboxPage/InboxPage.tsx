@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { useEffect } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../features/auth/context/AuthContext";
 import { useInvites } from "../../features/invites/hooks/useInvites";
 import { acceptInvite } from "../../features/invites/services/acceptInvite";
 import { emitTeamUpdate } from "../../Components/Utils/events";
@@ -42,13 +40,10 @@ const InboxPage = () => {
             <p>
               <strong>Team:</strong> {teamId}
             </p>
-
             <p>
               <strong>Role:</strong> {role}
             </p>
-
-            <button
-              onClick={() => id ? handleAccept(id) : null}>
+            <button onClick={() => id ? handleAccept(id) : null}>
               Accept Invite
             </button>
           </div>

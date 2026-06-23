@@ -1,5 +1,5 @@
 import { CustomButton } from "../../UI/Button/Button";
-import { Project } from "../../../types/Project";
+import { Project } from "../../../features/projects/type/Project";
 import "./ProjectsSideBar.css";
 
 type ProjectsSidebarProps = {

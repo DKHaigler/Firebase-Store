@@ -1,7 +1,7 @@
 import { User } from "firebase/auth";
 import { useState } from "react";
 import { CustomButton } from "../../UI/Button/Button";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../features/auth/context/AuthContext";
 import { TeamSwitcher } from "../../UI/TeamSwitcher/TeamSwitcher";
 import "./Header.css"
 import { NavLink } from "react-router-dom";

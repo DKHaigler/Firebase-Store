@@ -1,5 +1,4 @@
 import { CustomButton } from "../../../../../Components/UI/Button/Button"
-import { Task } from "../../../types/Task"; 
 import { isTaskOverdue } from "../../../../../Components/Utils/TaskRules";
 import { EnrichedTask } from "../../../hooks/useEnrichedTasks";
 

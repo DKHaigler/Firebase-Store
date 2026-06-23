@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { QuerySnapshot, DocumentData } from "firebase/firestore";
 import { Task } from "../types/Task";
-import { useTeam } from "../../../context/TeamContext";
+import { useTeam } from "../../teams/context/TeamContext";
 
 
 import {
   subscribeToTasks,
-} from "../../../services/taskServices";
+} from "../../tasks/service/taskServices";
 
 export const useTasks = () => {
   const [tasks, setTasks] = useState<Task[]>([]);

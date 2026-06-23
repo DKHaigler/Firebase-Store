@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../features/auth/context/AuthContext";
 import { SlidingToggle } from "../../Components/UI/ViewToggle/ViewToggle";
 import { getGreeting } from "../../Components/Utils/Greeting";
 import { TeamView } from "./TeamView";

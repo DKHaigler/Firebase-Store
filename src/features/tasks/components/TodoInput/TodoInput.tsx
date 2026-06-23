@@ -1,7 +1,7 @@
 import { CustomButton } from "../../../../Components/UI/Button/Button";
 
 import { useTeamMembers } from "../../../../features/members/hooks/useTeamMembers";
-import { useTeam } from "../../../../context/TeamContext";
+import { useTeam } from "../../../teams/context/TeamContext";
 
 type TodoInputProps = {
   newTodo: string;

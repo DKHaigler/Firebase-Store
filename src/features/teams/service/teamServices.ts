@@ -1,7 +1,7 @@
 import { getDoc, doc, setDoc, QuerySnapshot, DocumentData, query, collection, where, onSnapshot, addDoc, getDocs} from "firebase/firestore";
-import { db } from "../lib/firebase";
+import { db } from "../../../lib/firebase";
 import { User } from "firebase/auth";
-import { createMember } from "./membersService";
+import { createMember } from "../../members/service/membersService";
 
 export const subscribeToTeams = (
   userId: string,

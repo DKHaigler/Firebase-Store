@@ -5,8 +5,8 @@ import {
   updateTaskText,
   updateTaskStatus,
   getNextStatus,
-} from "../../../services/taskServices";
-import { addProject } from "../../../services/projectService";
+} from "../../tasks/service/taskServices";
+import { addProject } from "../../projects/service/projectService";
 
 type Params = {
   user: any;

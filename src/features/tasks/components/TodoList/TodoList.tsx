@@ -1,5 +1,4 @@
 import { TodoItem } from "./TodoItem/TodoItem";
-import { Task } from "../../types/Task";
 import { EnrichedTask } from "../../hooks/useEnrichedTasks";
 
 type TodoListProps = {

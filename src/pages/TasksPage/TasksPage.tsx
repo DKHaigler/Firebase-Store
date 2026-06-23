@@ -7,15 +7,15 @@ import { TodoList } from "../../features/tasks/components/TodoList/TodoList";
 import { CustomButton } from "../../Components/UI/Button/Button";
 
 import { useTasks } from "../../features/tasks/hooks/useTasks";
-import { useProjects } from "../../hooks/useProjects";
-import { useTeam } from "../../context/TeamContext";
+import { useProjects } from "../../features/projects/hook/useProjects";
+import { useTeam } from "../../features/teams/context/TeamContext";
 import { TasksStats } from "../../features/tasks/components/TaskStats";
 import { TasksFilter } from "../../features/tasks/components/TaskFilters";
 import { useTaskActions } from "../../features/tasks/hooks/useTasksActions";
 import { useEnrichedTasks } from "../../features/tasks/hooks/useEnrichedTasks";
 import { useTeamMembers } from "../../features/members/hooks/useTeamMembers";
 
-import { addProject } from "../../services/projectService";
+import { addProject } from "../../features/projects/service/projectService";
 
 import { ProjectsSidebar } from "../../Components/Layout/ProjectsSideBar/ProjectsSideBar";
 

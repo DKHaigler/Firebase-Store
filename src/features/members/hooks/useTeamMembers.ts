@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Member } from "../type/Members";
-import { getMembersByTeam } from "../../../services/membersService";
+import { getMembersByTeam } from "../service/membersService";
 
 export const useTeamMembers = (teamId: string | null) => {
   const [members, setMembers] = useState<Member[]>([]);

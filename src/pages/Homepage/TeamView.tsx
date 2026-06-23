@@ -1,4 +1,4 @@
-import { useTeam } from "../../context/TeamContext";
+import { useTeam } from "../../features/teams/context/TeamContext";
 
 import { useTasks } from "../../features/tasks/hooks/useTasks";
 import { useEnrichedTasks } from "../../features/tasks/hooks/useEnrichedTasks";

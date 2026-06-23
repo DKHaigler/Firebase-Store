@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { subscribeToProjects } from "../services/projectService";
-import { Project } from "../types/Project";
+import { subscribeToProjects } from "../service/projectService";
+import { Project } from "../type/Project";
 import { QuerySnapshot, DocumentData } from "firebase/firestore";
-import { useTeam } from "../context/TeamContext";
+import { useTeam } from "../../teams/context/TeamContext";
 
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
